@@ -84,13 +84,16 @@ jobs:
             echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
           fi
 
-      - name: enable emulation for cross targets
+      - name: install emulator for cross targets
         if: matrix.qemu
         shell: bash
         run: |
+          # qemu-user-static ships the interpreter we invoke directly below.
+          # Registering binfmt instead would need binfmt-support, which is not
+          # installed on the runner image, and is not needed to run one binary.
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
-          sudo update-binfmts --enable qemu-aarch64
+          command -v qemu-aarch64-static
 
       - name: build
         run: cargo build --release --target ${{ matrix.target }}
@@ -128,20 +131,18 @@ jobs:
           desc=$(file -b "$bin")
           echo "  $desc"
           case "$t" in
-            aarch64-unknown-linux-gnu) echo "$desc" | grep -q 'ARM aarch64' ;;
+            aarch64-unknown-linux-gnu)
+              echo "$desc" | grep -q 'ARM aarch64' \
+                || { echo "::error::$bin is not an aarch64 binary: $desc"; exit 1; }
+              ;;
           esac
 
           # The version is folded into the instruction stream as immediates, so
           # it is not greppable in the binary. Executing it is the only honest
-          # way to read it back, exactly as for a native target.
-          got=""
-          if got=$("$bin" --version 2>/dev/null); then
-            echo "ran via binfmt: $got"
-          elif command -v qemu-aarch64-static >/dev/null 2>&1; then
-            got=$(qemu-aarch64-static -L /usr/aarch64-linux-gnu "$bin" --version)
-            echo "ran via qemu-aarch64-static: $got"
-          fi
-          test -n "$got" || { echo "::error::could not execute $t"; exit 1; }
+          # way to read it back, exactly as for a native target. qemu's user
+          # mode needs the cross glibc as its sysroot, hence -L.
+          got=$(qemu-aarch64-static -L /usr/aarch64-linux-gnu "$bin" --version)
+          echo "ran under qemu: $got"
           test "$got" = "$want"
           echo "built: $got"
 
