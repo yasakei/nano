@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="320" viewBox="0 0 620 320" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif">
+<rect width="620" height="320" fill="#ffffff"/>
+<line x1="46" y1="270.44" x2="606" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="204.23" x2="606" y2="204.23" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="138.01" x2="606" y2="138.01" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="71.8" x2="606" y2="71.8" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="76" y1="30" x2="76" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="159.33" y1="30" x2="159.33" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="242.67" y1="30" x2="242.67" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="326" y1="30" x2="326" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="409.33" y1="30" x2="409.33" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="492.67" y1="30" x2="492.67" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="576" y1="30" x2="576" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="270.44" x2="606" y2="270.44" stroke="#788090" stroke-width="1"/>
+<line x1="46" y1="30" x2="46" y2="270.44" stroke="#788090" stroke-width="1"/>
+<line x1="43" y1="270.44" x2="46" y2="270.44" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="270.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="43" y1="204.23" x2="46" y2="204.23" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="204.23" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0.5</text>
+<line x1="43" y1="138.01" x2="46" y2="138.01" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="138.01" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1</text>
+<line x1="43" y1="71.8" x2="46" y2="71.8" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="71.8" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1.5</text>
+<line x1="76" y1="270.44" x2="76" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="76" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="159.33" y1="270.44" x2="159.33" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="159.33" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="242.67" y1="270.44" x2="242.67" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="242.67" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">4</text>
+<line x1="326" y1="270.44" x2="326" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="326" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">6</text>
+<line x1="409.33" y1="270.44" x2="409.33" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="409.33" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">8</text>
+<line x1="492.67" y1="270.44" x2="492.67" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="492.67" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">10</text>
+<line x1="576" y1="270.44" x2="576" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="576" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">12</text>
+<text x="46" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">Decay of a signal</text>
+<text x="326" y="306" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">time (s)</text>
+<text x="13" y="150.22" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 13 150.22)">amplitude</text>
+<line x1="464.24" y1="13" x2="476.24" y2="13" stroke="#346abe" stroke-width="2"/>
+<rect x="468.24" y="10.5" width="4" height="4" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<text x="481.24" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">model</text>
+<line x1="519.47" y1="13" x2="531.47" y2="13" stroke="#e0693e" stroke-width="2"/>
+<rect x="523.47" y="10.5" width="4" height="4" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<text x="536.47" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">model + noise</text>
+<polyline points="76,58.56 80.2,62.37 84.4,66.11 88.61,69.79 92.81,73.4 97.01,76.94 101.21,80.42 105.41,83.84 109.61,87.2 113.82,90.49 118.02,93.73 122.22,96.91 126.42,100.03 130.62,103.1 134.82,106.11 139.03,109.06 143.23,111.96 147.43,114.81 151.63,117.61 155.83,120.36 160.03,123.06 164.24,125.71 168.44,128.32 172.64,130.87 176.84,133.38 181.04,135.85 185.24,138.27 189.45,140.65 193.65,142.98 197.85,145.27 202.05,147.53 206.25,149.74 210.45,151.91 214.66,154.04 218.86,156.13 223.06,158.19 227.26,160.21 231.46,162.19 235.66,164.14 239.87,166.05 244.07,167.93 248.27,169.77 252.47,171.58 256.67,173.36 260.87,175.11 265.08,176.82 269.28,178.51 273.48,180.16 277.68,181.78 281.88,183.38 286.08,184.94 290.29,186.48 294.49,187.99 298.69,189.48 302.89,190.93 307.09,192.36 311.29,193.77 315.5,195.15 319.7,196.5 323.9,197.83 328.1,199.14 332.3,200.42 336.5,201.68 340.71,202.92 344.91,204.13 349.11,205.32 353.31,206.49 357.51,207.64 361.71,208.77 365.92,209.88 370.12,210.97 374.32,212.04 378.52,213.09 382.72,214.12 386.92,215.14 391.13,216.13 395.33,217.11 399.53,218.07 403.73,219.01 407.93,219.94 412.13,220.84 416.34,221.74 420.54,222.61 424.74,223.47 428.94,224.32 433.14,225.15 437.34,225.96 441.55,226.76 445.75,227.55 449.95,228.32 454.15,229.08 458.35,229.82 462.55,230.55 466.76,231.27 470.96,231.97 475.16,232.66 479.36,233.34 483.56,234.01 487.76,234.67 491.97,235.31 496.17,235.94 500.37,236.56 504.57,237.17 508.77,237.77 512.97,238.36 517.18,238.94 521.38,239.5 525.58,240.06 529.78,240.6 533.98,241.14 538.18,241.67 542.39,242.19 546.59,242.69 550.79,243.19 554.99,243.68 559.19,244.16 563.39,244.64 567.6,245.1 571.8,245.56 576,246" fill="none" stroke="#346abe" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="76,58.56 80.2,42.7 84.4,42.32 88.61,59.99 92.81,84.5 97.01,99.81 101.21,97.37 105.41,82.28 109.61,68.97 113.82,69.96 118.02,86.47 122.22,107.94 126.42,120.36 130.62,117.05 134.82,103.36 139.03,92.29 143.23,94.33 147.43,109.66 151.63,128.39 155.83,138.36 160.03,134.44 164.24,122.11 168.44,112.99 172.64,115.82 176.84,129.96 181.04,146.23 185.24,154.12 189.45,149.8 193.65,138.77 197.85,131.35 202.05,134.76 206.25,147.72 210.45,161.79 214.66,167.93 218.86,163.4 223.06,153.59 227.26,147.63 231.46,151.42 235.66,163.24 239.87,175.36 244.07,180.05 248.27,175.45 252.47,166.76 256.67,162.06 260.87,166.09 265.08,176.82 269.28,187.2 273.48,190.67 277.68,186.11 281.88,178.48 286.08,174.84 290.29,178.99 294.49,188.68 298.69,197.53 302.89,200 307.09,195.57 311.29,188.89 315.5,186.16 319.7,190.34 323.9,199.04 328.1,206.54 332.3,208.21 336.5,203.96 340.71,198.16 344.91,196.18 349.11,200.29 353.31,208.08 357.51,214.41 361.71,215.43 365.92,211.39 370.12,206.39 374.32,205.04 378.52,209.05 382.72,215.99 386.92,221.28 391.13,221.77 395.33,218 399.53,213.71 403.73,212.87 407.93,216.72 412.13,222.87 416.34,227.3 420.54,227.38 424.74,223.87 428.94,220.21 433.14,219.79 437.34,223.46 441.55,228.88 445.75,232.54 449.95,232.3 454.15,229.08 458.35,225.98 462.55,225.91 466.76,229.35 470.96,234.14 475.16,237.12 479.36,236.66 483.56,233.71 487.76,231.11 491.97,231.3 496.17,234.53 500.37,238.71 504.57,241.15 508.77,240.5 512.97,237.82 517.18,235.67 521.38,236.06 525.58,239.06 529.78,242.71 533.98,244.66 538.18,243.89 542.39,241.48 546.59,239.7 550.79,240.25 554.99,243.01 559.19,246.19 563.39,247.73 567.6,246.89 571.8,244.74 576,243.29" fill="none" stroke="#e0693e" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

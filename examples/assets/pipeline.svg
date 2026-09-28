@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="150" viewBox="0 0 560 150" font-family="Helvetica, Arial, sans-serif">
+  <rect width="560" height="150" fill="#ffffff"/>
+  <g font-size="13" fill="#1e222a" text-anchor="middle">
+    <rect x="18" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="83" y="80">raw data</text>
+    <rect x="215" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="280" y="80">analysis</text>
+    <rect x="412" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="477" y="80">figure</text>
+  </g>
+  <g stroke="#7a8292" stroke-width="1.6" fill="none" marker-end="url(#a)">
+    <path d="M152 75 H205"/><path d="M349 75 H402"/>
+  </g>
+  <g font-size="10" fill="#7a8292" text-anchor="middle">
+    <text x="180" y="64">clean</text><text x="376" y="64">render</text>
+  </g>
+  <text x="18" y="128" font-size="11" fill="#7a8292">one .nano file in, three outputs out</text>
+</svg>

@@ -1,0 +1,93 @@
+name: test
+
+# This is the CI. It runs on every push and pull request so problems surface
+# long before a tag exists, and it is also callable (`workflow_call`) so that
+# the release workflow can gate on exactly the same suite before it ships.
+on:
+  workflow_call:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  lint:
+    name: fmt + clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      # Advisory: the tree is not rustfmt-clean and clippy reports warnings, so
+      # these cannot be hard gates yet. Drop `continue-on-error` once both pass.
+      - name: fmt
+        continue-on-error: true
+        run: cargo fmt --all -- --check
+      - name: clippy
+        continue-on-error: true
+        run: cargo clippy --all-targets -- -D warnings
+
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, name: linux }
+          - { os: macos-latest, name: macos }
+          - { os: windows-latest, name: windows }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: cargo test
+        run: cargo test --all-targets
+      - name: cargo build (release)
+        run: cargo build --release
+      - name: version output
+        run: |
+          ./target/release/nano --version
+          ./target/release/nano -V
+      - name: node tests_js/run.mjs
+        run: node tests_js/run.mjs
+      # all.mjs also drives the browser suites, but exits 77 (skip) when no
+      # browser is present, which is the case on stock runners.
+      - name: node tests_js/all.mjs
+        run: node tests_js/all.mjs
+
+  # Browser coverage needs Playwright, which nano deliberately does not depend
+  # on. Advisory so a flaky download cannot block a push or a release.
+  browser:
+    name: browser
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: cargo build --release
+      - run: npm install --no-save playwright-core@1
+      - run: npx playwright install --with-deps chromium
+      - name: browser + interactive suites
+        env:
+          NANOPW: ${{ github.workspace }}/node_modules/playwright-core
+        run: node tests_js/all.mjs

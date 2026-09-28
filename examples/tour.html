@@ -1,0 +1,2994 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting to know nano</title>
+<meta name="description" content="A tour of the nano document language. Prose, runnable code, data, charts, math and media live in the same file, and build to Markdown, HTML and PDF.">
+<meta name="author" content="Ada Researcher">
+<meta name="generator" content="nano">
+<style>
+:root {
+  --ink: #1e222a;
+  --muted: #666e7e;
+  --grid: #e4e7ee;
+  --code-edge: #e4e7ee;
+  --accent: #346aba;
+  --paper: #ffffff;
+  --panel: #f6f7f9;
+  --border: #e2e6ee;
+  --code-bg: #f7f8fa;
+  --shadow: 0 1px 2px rgba(16,24,40,.05), 0 10px 28px rgba(16,24,40,.06);
+  --font-body: "Times New Roman", Times, "Liberation Serif", Georgia, serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-math: "Latin Modern Math", "Cambria Math", Georgia, "Times New Roman", serif;
+  --font-sans-math: "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+  --size: 19px;
+  --leading: 1.45;
+  --measure: 46rem;
+  /* vertical rhythm taken from the PDF layout: a paragraph leaves .55 of a
+     line, a figure .8, a panel 1.2, a new section 1.9 */
+  --s1: .55rem;
+  --s2: .8rem;
+  --s3: 1.2rem;
+  --s4: 1.9rem;
+  --good: #3a8f5c;
+  --good-ink: #2f7d4f;
+  --bad: #d64545;
+  --bad-ink: #b3312f;
+}
+
+body.theme-serif {
+  --font-body: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Liberation Serif", serif;
+  --font-head: var(--font-body);
+  --leading: 1.55;
+  --measure: 44rem;
+  --accent: #8a5a2b;
+}
+
+body.theme-dark {
+  --ink: #e6e8ee;
+  --muted: #98a1b1;
+  --grid: #262c37;
+  --accent: #7fb2f0;
+  --paper: #0f1115;
+  --panel: #171b23;
+  --border: #262c37;
+  --code-bg: #141821;
+  --good-ink: #6cc38d;
+  --bad-ink: #f08a86;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 14px 34px rgba(0,0,0,.45);
+}
+
+body.theme-minimal {
+  --ink: #16181d;
+  --muted: #6c7280;
+  --grid: transparent;
+  --accent: #16181d;
+  --border: transparent;
+  --panel: transparent;
+  --code-bg: transparent;
+  --shadow: none;
+  --size: 17px;
+  --leading: 1.6;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: var(--size); -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: var(--leading);
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s4) 1.5rem 5rem;
+}
+
+p { margin: 0 0 var(--s1); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 32%, transparent); }
+a:hover { border-bottom-color: var(--accent); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: .86em;
+  background: var(--panel);
+  border: 0;
+  border-radius: 0;
+  padding: .06em .26em;
+}
+
+del { color: var(--muted); }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--grid);
+  margin: var(--s3) 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-head);
+  font-weight: 650;
+  line-height: 1.22;
+  letter-spacing: -.012em;
+  scroll-margin-top: 4rem;
+  margin: 0 0 .7em;
+}
+
+h1 { font-size: 2.1rem; }
+h1, h2, h3, h4, h5, h6 { margin-bottom: var(--s1); font-weight: 700; letter-spacing: 0; }
+h1 { font-size: 1.43rem; margin-top: var(--s4); }
+h2 { font-size: 1.19rem; margin-top: var(--s4); }
+h3, h4 { font-size: 1.05rem; margin-top: var(--s3); }
+h5 { font-size: 1rem; margin-top: var(--s2); }
+h6 { font-size: .9rem; margin-top: var(--s2); color: var(--muted); }
+
+.anchor {
+  margin-left: .45em;
+  color: var(--muted);
+  border: 0;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+
+h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
+h4:hover .anchor, h5:hover .anchor, h6:hover .anchor { opacity: .55; }
+.anchor:hover { opacity: 1 !important; color: var(--accent); }
+
+ul, ol { margin: 0 0 var(--s1); padding-left: 1.45em; }
+li { margin: .28em 0; }
+li::marker { color: var(--accent); }
+ol li::marker { font-weight: 650; font-variant-numeric: tabular-nums; }
+
+.ref { color: var(--muted); font-family: var(--font-mono); font-size: .86em; }
+
+.pagebreak { break-after: page; page-break-after: always; height: 0; margin: 0; border-top: 1px dashed var(--grid); }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  -webkit-backdrop-filter: saturate(1.5) blur(10px);
+  backdrop-filter: saturate(1.5) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: .5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  font-family: var(--font-head);
+  font-size: .84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.to-top { font-size: .76rem; color: var(--muted); border: 0; white-space: nowrap; }
+.to-top:hover { color: var(--accent); }
+
+.doc-head { margin: 0 0 var(--s3); text-align: center; }
+.doc-title { margin: 0 0 .2em; font-size: 2.1rem; font-weight: 700; }
+.doc-sub { font-family: var(--font-head); font-size: 1.24rem; color: var(--muted); margin: 0 0 .5em; }
+.byline { margin: 0 0 .2em; }
+.lead {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.5;
+  /* set as an abstract: narrower than the measure so it reads as a block
+     rather than a stretched line */
+  max-width: 32rem;
+  margin: var(--s2) auto 0;
+  text-align: center;
+}
+.keywords { font-size: .86rem; color: var(--muted); margin: var(--s1) auto 0; max-width: 32rem; }
+.kw-label {
+  font-size: 1em;
+  font-weight: 700;
+  margin-right: .4em;
+}
+
+.toc { margin: var(--s3) 0; }
+.toc h2 { margin: 0 0 .3rem; font-size: 1.05rem; }
+.toc ul { list-style: none; margin: 0; padding: 0; }
+.toc ul ul { padding-left: 1.15em; }
+.toc li { margin: 0 0 .15em; }
+.toc a { color: var(--ink); border: 0; }
+.toc a:hover { color: var(--accent); }
+.toc-empty { color: var(--muted); font-size: .92rem; margin: 0; }
+
+.quote {
+  margin: var(--s2) 0;
+  padding: 0 0 0 1rem;
+  border-left: 3px solid var(--grid);
+  color: var(--muted);
+  font-style: italic;
+}
+.quote code { font-style: normal; }
+
+.checklist { list-style: none; margin: 0 0 1.1em; padding: 0; }
+.checklist li { display: flex; align-items: baseline; gap: .55em; margin: .3em 0; }
+.checklist .box {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 1.02em;
+  height: 1.02em;
+  margin-bottom: -.14em;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  text-align: center;
+  font-size: .82em;
+  line-height: 1;
+  color: var(--paper);
+}
+.checklist li.done .box { background: var(--accent); border-color: var(--accent); }
+.checklist li.done { color: var(--muted); }
+
+.cell {
+  margin: 0 0 var(--s2);
+  border: 1px solid var(--code-edge);
+  border-radius: 0;
+  background: var(--code-bg);
+  overflow: hidden;
+}
+.cell-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  padding: .15rem .4rem;
+  border-bottom: 1px solid var(--border);
+}
+.cell-head .lang {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.copy {
+  font: inherit;
+  font-size: .72rem;
+  line-height: 1.5;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: .1rem .3rem;
+  cursor: pointer;
+}
+.copy:hover { color: var(--accent); }
+.cell pre { margin: 0; padding: .45rem .55rem; overflow-x: auto; }
+.cell pre code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .81rem;
+  line-height: 1.62;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: var(--ink);
+  white-space: pre;
+}
+.cell .result {
+  padding: .7rem 1rem;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  border-left: 3px solid transparent;
+}
+.cell .result.good { border-left-color: var(--good); }
+.cell .result.bad { border-left-color: var(--bad); }
+.cell .out {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  margin: 0 0 .35em;
+}
+.cell .result > .value {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  line-height: 1.55;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  white-space: pre-wrap;
+}
+.cell .result > .err {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  line-height: 1.55;
+  color: var(--bad-ink);
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+figure { margin: var(--s3) 0; }
+figcaption {
+  margin-top: .4rem;
+  font-size: .86rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: center;
+}
+figure.plot svg { width: 100%; height: auto; display: block; }
+.plot-wrap, .live-canvas-wrap { position: relative; }
+.live-canvas-wrap canvas.live, .plot-wrap canvas.live {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.plot-error { color: var(--bad-ink); font-family: var(--font-mono); font-size: .86rem; }
+
+.table-wrap {
+  overflow-x: auto;
+  border-top: 1px solid var(--grid);
+  border-bottom: 1px solid var(--grid);
+  background: var(--paper);
+}
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { padding: .48rem .72rem; border-bottom: 0.5px solid var(--grid); text-align: left; vertical-align: top; }
+thead th {
+  font-weight: 650;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: 0; }
+table.zebra tbody tr:nth-child(even) { background: var(--panel); }
+tr.more td { text-align: center; color: var(--muted); font-size: .84rem; }
+tr.more em { font-style: italic; }
+
+.note {
+  margin: var(--s3) 0;
+  padding: .5rem .8rem;
+  border-left: 3px solid var(--note, var(--accent));
+  border-radius: 0 3px 3px 0;
+  background: var(--panel);
+  background: color-mix(in srgb, var(--note, var(--accent)) 7%, var(--paper));
+  font-size: .9rem;
+  line-height: 1.4;
+}
+.note-info { --note: #346aba; }
+.note-tip { --note: #48a05a; }
+.note-warning { --note: #e0a028; }
+.note-danger { --note: #d64545; }
+.note-note { --note: #5a6476; }
+.note-label {
+  font-size: .86rem;
+  font-weight: 700;
+  color: var(--note, var(--accent));
+  margin-bottom: .1rem;
+}
+.note-title { margin: 0 0 .25rem; }
+.note-title strong { color: var(--note, var(--accent)); }
+.note-body { margin: 0; }
+
+.widget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .7rem;
+  margin: var(--s2) 0;
+  padding: .35rem 0;
+  border: 0;
+  border-top: 1px solid var(--grid);
+  border-bottom: 1px solid var(--grid);
+  background: none;
+}
+.widget label { font-size: .85rem; font-weight: 600; color: var(--muted); min-width: 5.5rem; }
+.widget input[type="range"] { flex: 1 1 12rem; min-width: 8rem; height: 1.3rem; accent-color: var(--accent); }
+.widget input[type="checkbox"] { width: 1.12rem; height: 1.12rem; accent-color: var(--accent); }
+.widget select, .widget input[type="number"], .widget input[type="text"] {
+  font: inherit;
+  font-size: .88rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: .26rem .5rem;
+}
+.widget .value {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: .84rem;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: .1rem .2rem;
+  min-width: 3.6rem;
+  text-align: center;
+}
+
+img { max-width: 100%; height: auto; border-radius: 8px; }
+.inline-img { display: inline-block; vertical-align: middle; }
+.svg-inline { display: inline-block; max-width: 100%; line-height: 0; }
+.svg-inline svg { max-width: 100%; height: auto; }
+.missing {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: .3rem .5rem;
+}
+
+figure.media { margin: var(--s3) 0; }
+figure.media.float-left { float: left; margin: .4rem 1.6rem 1rem 0; max-width: 50%; }
+figure.media.float-right { float: right; margin: .4rem 0 1rem 1.6rem; max-width: 50%; }
+figure.media img { display: block; }
+figure.media video, figure.media iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+}
+figure.media iframe { aspect-ratio: 16 / 9; }
+.audio-card {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: .4rem 0;
+  border: 0;
+  background: none;
+}
+.audio-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+.audio-meta { flex: 1 1 auto; min-width: 0; }
+.audio-name { display: block; font-size: .82rem; color: var(--muted); margin-bottom: .2rem; }
+.audio-card audio { width: 100%; }
+
+.math { white-space: nowrap; }
+.math-display {
+  display: block;
+  margin: var(--s2) 0;
+  padding: 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.tex {
+  font-family: var(--font-math);
+  font-style: normal;
+  line-height: 1.4;
+}
+.tex-display { font-size: 1.06em; }
+.tex .mi { font-style: italic; }
+.tex .mi.rm, .tex .mi.bf, .tex .mi.sf, .tex .mi.tt { font-style: normal; }
+.tex .mi.sf { font-family: var(--font-sans-math); }
+.tex .cal { font-family: var(--font-math); font-style: italic; }
+.tex .mi.tt, .tex .mtext.tt { font-family: var(--font-mono); }
+.tex .mn, .tex .mo, .tex .opname, .tex .op, .tex .bb, .tex .mtext, .tex .delim, .tex .space, .tex .lim-over, .tex .lim-under { font-style: normal; }
+.tex .bb { font-weight: 400; }
+.tex .mo.rel { padding: 0 .28em; }
+.tex .mo.bin { padding: 0 .18em; }
+.tex .mo.un { padding: 0 .04em; }
+.tex .mo.punct { padding-right: .18em; }
+.tex .opname { padding-right: .15em; }
+.tex .op { font-size: 1.35em; line-height: 1; }
+.tex .opbig { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.08; margin: 0 .12em; }
+.tex .lim-over, .tex .lim-under { display: block; text-align: center; font-size: .7em; line-height: 1.15; }
+.tex .scripts, .tex .mscripts { display: inline-block; white-space: nowrap; }
+.tex .mscripts > .scripts { display: inline-block; }
+.tex sub, .tex sup, .tex .sub, .tex .sup { font-size: .72em; line-height: 0; }
+.tex .acc, .tex .acc-over, .tex .acc-under, .tex .acc-hat, .tex .acc-bar,
+.tex .acc-vec, .tex .acc-dot, .tex .acc-ddot, .tex .acc-tilde, .tex .acc-check,
+.tex .acc-breve, .tex .acc-acute, .tex .acc-grave, .tex .acc-mathring,
+.tex .acc-widetilde, .tex .acc-widehat, .tex .acc-overrightarrow, .tex .acc-overleftarrow { position: relative; display: inline-block; }
+.tex .accm { position: absolute; left: 50%; top: 0; transform: translateX(-50%); font-style: normal; line-height: 1; }
+.tex .frac .num, .tex .frac .den { display: block; padding: 0 .2em; }
+.tex .frac .bar { display: block; border-top: 1px solid currentColor; }
+.tex .binom .num { padding-bottom: .18em; }
+.tex .binom .den { padding-top: .18em; }
+.tex .tfrac .num, .tex .tfrac .den { font-size: .88em; }
+.tex .sqrt { display: inline-block; white-space: nowrap; margin: 0 .1em; }
+.tex .sqrt .root { display: inline-block; border-top: 1px solid currentColor; padding: 0 .1em 0 0; }
+.tex .sqrt .rad { font-size: 1.5em; line-height: 1; }
+.tex .sqrt .idx { font-size: .6em; margin: 0 -.05em -.2em 0; }
+.tex .delimpair, .tex .delim-in { display: inline-block; vertical-align: middle; white-space: nowrap; }
+.tex .delim.big { line-height: .9; }
+.tex .delim.big1 { font-size: 1.2em; }
+.tex .delim.big2 { font-size: 1.5em; }
+.tex .delim.big3 { font-size: 1.9em; }
+.tex .delim.big4 { font-size: 2.3em; }
+.tex .delim.big5 { font-size: 2.7em; }
+.tex .delim { font-style: normal; }
+.tex .not { position: relative; display: inline-block; }
+.tex .notslash { position: absolute; left: -.08em; top: -.12em; font-size: .85em; line-height: 1; }
+.tex .space, .tex .space.sp-thin, .tex .space.sp-med, .tex .space.sp-thick,
+.tex .space.sp-neg, .tex .space.sp-norm, .tex .space.sp-quad, .tex .space.sp-qquad,
+.tex .space.sp-hskip { display: inline-block; }
+.tex .space.sp-nbsp { white-space: pre; }
+.tex .space.sp-row { display: block; height: 0; }
+.tex .prime { font-style: normal; }
+.tex .pr { padding: 0 .04em; }
+.tex .unk {
+  color: #b23;
+  font-family: var(--font-mono);
+  font-size: .9em;
+  border-bottom: 1px dotted currentColor;
+}
+.tex .hline { display: block; border-top: 1px solid var(--muted); }
+.tex .eqtag { float: right; color: var(--muted); font-size: .85em; }
+.tex .tex-env, .tex .tex-align { display: block; margin: .7em 0; width: 100%; }
+.tex .env-equation, .tex .env-align, .tex .env-gather { text-align: center; }
+.tex .al-row { display: flex; align-items: center; gap: .9em; width: 100%; }
+.tex .al-center { text-align: center; }
+.tex .al-r { flex: 1 1 0; text-align: right; }
+.tex .al-l { flex: 1 1 0; text-align: left; }
+.tex .matrix, .tex .matrix-matrix, .tex .matrix-smallmatrix, .tex .matrix-pmatrix,
+.tex .matrix-bmatrix, .tex .matrix-Bmatrix, .tex .matrix-vmatrix, .tex .matrix-Vmatrix,
+.tex .matrix-cases, .tex .matrix-dcases, .tex .matrix-array { display: inline-block; vertical-align: middle; margin: 0 .15em; }
+.tex .mbrace, .tex .mbrace-l, .tex .mbrace-r { display: inline-block; vertical-align: middle; width: .3em; }
+.tex .mbrace-l { border-right: 0; }
+.tex .mbrace-r { border-left: 0; }
+.tex .mgrid { display: inline-grid; justify-items: center; align-items: center; vertical-align: middle; }
+.tex .mrow-grid { display: contents; }
+.tex .mcell { padding: .12em .4em; }
+.tex .mrow, .tex .grp, .tex .accb, .tex .radx { display: inline-block; }
+.tex .colored { color: inherit; }
+.tex .overset, .tex .underset { display: inline-block; text-align: center; vertical-align: middle; }
+
+@page { margin: 16mm 14mm; }
+
+@media print {
+  html { font-size: 11.5pt; }
+  .topbar, .copy, .anchor, canvas.live { display: none !important; }
+  figure, table, .cell, .note, .widget, .quote, .toc { break-inside: avoid; }
+  a { border-bottom: 0; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; color: var(--muted); word-break: break-all; }
+  body.theme-default, body.theme-serif, body.theme-dark, body.theme-minimal {
+    --ink: #1e222a;
+    --muted: #5f6675;
+    --grid: #d9dee7;
+    --accent: #346aba;
+    --paper: #ffffff;
+    --panel: #f6f7f9;
+    --border: #d9dee7;
+    --code-bg: #f7f8fa;
+    --good-ink: #2f7d4f;
+    --bad-ink: #b3312f;
+    --shadow: none;
+  }
+  html, body { background: #ffffff; }
+}
+
+</style>
+</head>
+<body class="theme-default">
+<main id="content">
+<header class="doc-head">
+<h1 class="doc-title">Getting to know nano</h1>
+<p class="doc-sub">One file, three outputs, zero dependencies</p>
+<p class="byline">Ada Researcher · 2026-02-14</p>
+<p class="lead">A tour of the nano document language. Prose, runnable code, data, charts, math and media live in the same file, and build to Markdown, HTML and PDF.</p>
+<p class="keywords"><span class="kw-label">Keywords</span>nano · research · literate · plotting · pdf</p>
+</header>
+<h1 id="getting-to-know-nano">Getting to know nano<a class="anchor" href="#getting-to-know-nano">#</a></h1>
+<p>A <code>.nano</code> file is a *<em>research document</em>*, not a program that happens to print
+text. Prose, code, data, figures and citations are the same document, so there
+is nothing to keep in sync and nothing to export by hand.</p>
+<nav class="toc"><h2>Contents</h2>
+<ul>
+<li><a href="#the-shape-of-a-document">The shape of a document</a></li>
+<li><a href="#charts-are-one-block">Charts are one block</a></li>
+<li><a href="#functions-without-ceremony">Functions without ceremony</a></li>
+<li><a href="#interactive-figures">Interactive figures</a></li>
+<li><a href="#data-in-tables">Data in tables</a></li>
+<li><a href="#math-notes-and-media">Math, notes and media</a></li>
+<li><a href="#where-to-go-next">Where to go next</a></li>
+</ul>
+</nav>
+<h2 id="the-shape-of-a-document">The shape of a document<a class="anchor" href="#the-shape-of-a-document">#</a></h2>
+<p>Anything you can write in Markdown works here, because Markdown is a subset.
+Two things are added: fenced code blocks that *<em>run</em>*, and directives that
+start with <code>@</code>.</p>
+<div class="cell" id="cell-1">
+<div class="cell-head"><span class="lang">nano</span><button class="copy" type="button" data-copy-target="cell-1">copy</button></div>
+<pre><code>let girth = [1.2, 1.6, 1.9, 2.3, 2.8, 3.1]
+let mass  = [7.1, 12.4, 17.9, 24.2, 31.0, 38.4]
+
+&quot;n = {len(girth)}&quot;</code></pre>
+<div class="result good">
+<div class="value">n = 6</div>
+</div>
+</div>
+<p>The value of the last expression in a cell is printed under it, and anything
+<code>print</code> output is captured too. The sample is small: mean girth 2.15,
+and the coefficient of variation of mass is
+0.536.</p>
+<aside class="note note-note">
+<div class="note-label">NOTE</div>
+<p class="note-body">Cells share one scope, top to bottom, exactly like a notebook. A variable
+defined in cell 4 is available in cell 40, and in every <code>@plot</code> below it.</p>
+</aside>
+<h2 id="charts-are-one-block">Charts are one block<a class="anchor" href="#charts-are-one-block">#</a></h2>
+<p>A plot is a directive with <code>key = expression</code> lines. Data lives in the language,
+so you compute it, then draw it.</p>
+<div class="cell" id="cell-2">
+<div class="cell-head"><span class="lang">nano</span><button class="copy" type="button" data-copy-target="cell-2">copy</button></div>
+<pre><code>let t     = linspace(0, 12, 120)
+let calm  = map(t, fn(x) =&gt; 1.6 * exp(-0.18 * x))
+let noisy = map(t, fn(x) =&gt; round(calm[min(floor(x * 10), len(calm) - 1)] * (1 + 0.12 * sin(9 * x)), 4))</code></pre>
+<div class="result good">
+</div>
+</div>
+<figure class="plot" id="fig-1">
+<div class="plot-wrap live-canvas-wrap">
+<svg role="img" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" width="620" height="320" viewBox="0 0 620 320" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif"><title>Decay of a signal</title>
+<rect width="620" height="320" fill="#ffffff"/>
+<line x1="46" y1="270.44" x2="606" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="204.23" x2="606" y2="204.23" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="138.01" x2="606" y2="138.01" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="71.8" x2="606" y2="71.8" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="76" y1="30" x2="76" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="159.33" y1="30" x2="159.33" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="242.67" y1="30" x2="242.67" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="326" y1="30" x2="326" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="409.33" y1="30" x2="409.33" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="492.67" y1="30" x2="492.67" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="576" y1="30" x2="576" y2="270.44" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="270.44" x2="606" y2="270.44" stroke="#788090" stroke-width="1"/>
+<line x1="46" y1="30" x2="46" y2="270.44" stroke="#788090" stroke-width="1"/>
+<line x1="43" y1="270.44" x2="46" y2="270.44" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="270.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="43" y1="204.23" x2="46" y2="204.23" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="204.23" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0.5</text>
+<line x1="43" y1="138.01" x2="46" y2="138.01" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="138.01" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1</text>
+<line x1="43" y1="71.8" x2="46" y2="71.8" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="71.8" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1.5</text>
+<line x1="76" y1="270.44" x2="76" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="76" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="159.33" y1="270.44" x2="159.33" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="159.33" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="242.67" y1="270.44" x2="242.67" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="242.67" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">4</text>
+<line x1="326" y1="270.44" x2="326" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="326" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">6</text>
+<line x1="409.33" y1="270.44" x2="409.33" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="409.33" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">8</text>
+<line x1="492.67" y1="270.44" x2="492.67" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="492.67" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">10</text>
+<line x1="576" y1="270.44" x2="576" y2="273.44" stroke="#788090" stroke-width="0.8"/>
+<text x="576" y="276.44" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">12</text>
+<text x="46" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">Decay of a signal</text>
+<text x="326" y="306" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">time (s)</text>
+<text x="13" y="150.22" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 13 150.22)">amplitude</text>
+<line x1="464.24" y1="13" x2="476.24" y2="13" stroke="#346abe" stroke-width="2"/>
+<rect x="468.24" y="10.5" width="4" height="4" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<text x="481.24" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">model</text>
+<line x1="519.47" y1="13" x2="531.47" y2="13" stroke="#e0693e" stroke-width="2"/>
+<rect x="523.47" y="10.5" width="4" height="4" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<text x="536.47" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">model + noise</text>
+<polyline points="76,58.56 80.2,62.37 84.4,66.11 88.61,69.79 92.81,73.4 97.01,76.94 101.21,80.42 105.41,83.84 109.61,87.2 113.82,90.49 118.02,93.73 122.22,96.91 126.42,100.03 130.62,103.1 134.82,106.11 139.03,109.06 143.23,111.96 147.43,114.81 151.63,117.61 155.83,120.36 160.03,123.06 164.24,125.71 168.44,128.32 172.64,130.87 176.84,133.38 181.04,135.85 185.24,138.27 189.45,140.65 193.65,142.98 197.85,145.27 202.05,147.53 206.25,149.74 210.45,151.91 214.66,154.04 218.86,156.13 223.06,158.19 227.26,160.21 231.46,162.19 235.66,164.14 239.87,166.05 244.07,167.93 248.27,169.77 252.47,171.58 256.67,173.36 260.87,175.11 265.08,176.82 269.28,178.51 273.48,180.16 277.68,181.78 281.88,183.38 286.08,184.94 290.29,186.48 294.49,187.99 298.69,189.48 302.89,190.93 307.09,192.36 311.29,193.77 315.5,195.15 319.7,196.5 323.9,197.83 328.1,199.14 332.3,200.42 336.5,201.68 340.71,202.92 344.91,204.13 349.11,205.32 353.31,206.49 357.51,207.64 361.71,208.77 365.92,209.88 370.12,210.97 374.32,212.04 378.52,213.09 382.72,214.12 386.92,215.14 391.13,216.13 395.33,217.11 399.53,218.07 403.73,219.01 407.93,219.94 412.13,220.84 416.34,221.74 420.54,222.61 424.74,223.47 428.94,224.32 433.14,225.15 437.34,225.96 441.55,226.76 445.75,227.55 449.95,228.32 454.15,229.08 458.35,229.82 462.55,230.55 466.76,231.27 470.96,231.97 475.16,232.66 479.36,233.34 483.56,234.01 487.76,234.67 491.97,235.31 496.17,235.94 500.37,236.56 504.57,237.17 508.77,237.77 512.97,238.36 517.18,238.94 521.38,239.5 525.58,240.06 529.78,240.6 533.98,241.14 538.18,241.67 542.39,242.19 546.59,242.69 550.79,243.19 554.99,243.68 559.19,244.16 563.39,244.64 567.6,245.1 571.8,245.56 576,246" fill="none" stroke="#346abe" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="76,58.56 80.2,42.7 84.4,42.32 88.61,59.99 92.81,84.5 97.01,99.81 101.21,97.37 105.41,82.28 109.61,68.97 113.82,69.96 118.02,86.47 122.22,107.94 126.42,120.36 130.62,117.05 134.82,103.36 139.03,92.29 143.23,94.33 147.43,109.66 151.63,128.39 155.83,138.36 160.03,134.44 164.24,122.11 168.44,112.99 172.64,115.82 176.84,129.96 181.04,146.23 185.24,154.12 189.45,149.8 193.65,138.77 197.85,131.35 202.05,134.76 206.25,147.72 210.45,161.79 214.66,167.93 218.86,163.4 223.06,153.59 227.26,147.63 231.46,151.42 235.66,163.24 239.87,175.36 244.07,180.05 248.27,175.45 252.47,166.76 256.67,162.06 260.87,166.09 265.08,176.82 269.28,187.2 273.48,190.67 277.68,186.11 281.88,178.48 286.08,174.84 290.29,178.99 294.49,188.68 298.69,197.53 302.89,200 307.09,195.57 311.29,188.89 315.5,186.16 319.7,190.34 323.9,199.04 328.1,206.54 332.3,208.21 336.5,203.96 340.71,198.16 344.91,196.18 349.11,200.29 353.31,208.08 357.51,214.41 361.71,215.43 365.92,211.39 370.12,206.39 374.32,205.04 378.52,209.05 382.72,215.99 386.92,221.28 391.13,221.77 395.33,218 399.53,213.71 403.73,212.87 407.93,216.72 412.13,222.87 416.34,227.3 420.54,227.38 424.74,223.87 428.94,220.21 433.14,219.79 437.34,223.46 441.55,228.88 445.75,232.54 449.95,232.3 454.15,229.08 458.35,225.98 462.55,225.91 466.76,229.35 470.96,234.14 475.16,237.12 479.36,236.66 483.56,233.71 487.76,231.11 491.97,231.3 496.17,234.53 500.37,238.71 504.57,241.15 508.77,240.5 512.97,237.82 517.18,235.67 521.38,236.06 525.58,239.06 529.78,242.71 533.98,244.66 538.18,243.89 542.39,241.48 546.59,239.7 550.79,240.25 554.99,243.01 559.19,246.19 563.39,247.73 567.6,246.89 571.8,244.74 576,243.29" fill="none" stroke="#e0693e" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
+</div>
+<figcaption>Figure 1. An exponential model with additive structure. Both series are computed in the cell above.</figcaption>
+</figure>
+<p>Every chart type works: <code>line</code>, <code>scatter</code>, <code>area</code>, <code>step</code>, <code>bar</code>, <code>hbar</code>,
+<code>hist</code>, <code>box</code>, <code>heatmap</code>, <code>errorbar</code>, <code>function</code>, <code>stem</code>, <code>density</code>.</p>
+<div class="cell" id="cell-3">
+<div class="cell-head"><span class="lang">nano</span><button class="copy" type="button" data-copy-target="cell-3">copy</button></div>
+<pre><code>seed(7)
+let groups = [&quot;control&quot;, &quot;low dose&quot;, &quot;high dose&quot;]
+let values = [randn(22), map(randn(22), fn(v) =&gt; v + 0.6), map(randn(22), fn(v) =&gt; v + 1.3)]</code></pre>
+<div class="result good">
+</div>
+</div>
+<figure class="plot" id="fig-2">
+<div class="plot-wrap live-canvas-wrap">
+<svg role="img" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" width="660" height="260" viewBox="0 0 660 260" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif"><title>Three treatments</title>
+<rect width="660" height="260" fill="#ffffff"/>
+<line x1="46" y1="159.56" x2="646" y2="159.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="85.42" x2="646" y2="85.42" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="145" y1="30" x2="145" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="256.46" y1="30" x2="256.46" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="367.91" y1="30" x2="367.91" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="479.37" y1="30" x2="479.37" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="590.83" y1="30" x2="590.83" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="229.56" x2="646" y2="229.56" stroke="#788090" stroke-width="1"/>
+<line x1="46" y1="30" x2="46" y2="229.56" stroke="#788090" stroke-width="1"/>
+<line x1="43" y1="159.56" x2="46" y2="159.56" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="159.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="43" y1="85.42" x2="46" y2="85.42" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="85.42" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">2</text>
+<line x1="145" y1="229.56" x2="145" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="145" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-1</text>
+<line x1="256.46" y1="229.56" x2="256.46" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="256.46" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="367.91" y1="229.56" x2="367.91" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="367.91" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">1</text>
+<line x1="479.37" y1="229.56" x2="479.37" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="479.37" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="590.83" y1="229.56" x2="590.83" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="590.83" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">3</text>
+<text x="46" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">Three treatments</text>
+<text x="13" y="129.78" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 13 129.78)">response</text>
+<line x1="453.17" y1="13" x2="465.17" y2="13" stroke="#346abe" stroke-width="2"/>
+<rect x="457.17" y="10.5" width="4" height="4" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<text x="470.17" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">control</text>
+<line x1="511.18" y1="13" x2="523.18" y2="13" stroke="#e0693e" stroke-width="2"/>
+<rect x="515.18" y="10.5" width="4" height="4" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<text x="528.18" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">low dose</text>
+<line x1="578.64" y1="13" x2="590.64" y2="13" stroke="#48a05a" stroke-width="2"/>
+<rect x="582.64" y="10.5" width="4" height="4" rx="0" fill="#48a05a" stroke="none" stroke-width="1"/>
+<text x="595.64" y="8" font-size="10" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="start" dominant-baseline="hanging">high dose</text>
+<line x1="96" y1="163.4" x2="196" y2="163.4" stroke="#346abe" stroke-width="1.4"/>
+<line x1="96" y1="133.09" x2="196" y2="133.09" stroke="#346abe" stroke-width="1.4"/>
+<line x1="96" y1="163.4" x2="96" y2="133.09" stroke="#346abe" stroke-width="1.4"/>
+<line x1="196" y1="163.4" x2="196" y2="133.09" stroke="#346abe" stroke-width="1.4"/>
+<line x1="146" y1="218.86" x2="146" y2="163.4" stroke="#346abe" stroke-width="1"/>
+<line x1="146" y1="133.09" x2="146" y2="81.16" stroke="#346abe" stroke-width="1"/>
+<line x1="121" y1="218.86" x2="171" y2="218.86" stroke="#346abe" stroke-width="1"/>
+<line x1="121" y1="81.16" x2="171" y2="81.16" stroke="#346abe" stroke-width="1"/>
+<rect x="96" y="133.09" width="100" height="30.31" rx="0" fill="rgba(52,106,190,0.18)" stroke="#346abe" stroke-width="1"/>
+<line x1="96" y1="151.5" x2="196" y2="151.5" stroke="#346abe" stroke-width="2"/>
+<rect x="144.5" y="217.36" width="3" height="3" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<rect x="144.5" y="79.66" width="3" height="3" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<rect x="144.5" y="161.9" width="3" height="3" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<rect x="144.5" y="131.59" width="3" height="3" rx="0" fill="#346abe" stroke="none" stroke-width="1"/>
+<line x1="296" y1="174.72" x2="396" y2="174.72" stroke="#e0693e" stroke-width="1.4"/>
+<line x1="296" y1="109.97" x2="396" y2="109.97" stroke="#e0693e" stroke-width="1.4"/>
+<line x1="296" y1="174.72" x2="296" y2="109.97" stroke="#e0693e" stroke-width="1.4"/>
+<line x1="396" y1="174.72" x2="396" y2="109.97" stroke="#e0693e" stroke-width="1.4"/>
+<line x1="346" y1="210.06" x2="346" y2="174.72" stroke="#e0693e" stroke-width="1"/>
+<line x1="346" y1="109.97" x2="346" y2="74.6" stroke="#e0693e" stroke-width="1"/>
+<line x1="321" y1="210.06" x2="371" y2="210.06" stroke="#e0693e" stroke-width="1"/>
+<line x1="321" y1="74.6" x2="371" y2="74.6" stroke="#e0693e" stroke-width="1"/>
+<rect x="296" y="109.97" width="100" height="64.75" rx="0" fill="rgba(224,105,62,0.18)" stroke="#e0693e" stroke-width="1"/>
+<line x1="296" y1="147.49" x2="396" y2="147.49" stroke="#e0693e" stroke-width="2"/>
+<rect x="344.5" y="208.56" width="3" height="3" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<rect x="344.5" y="73.1" width="3" height="3" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<rect x="344.5" y="173.22" width="3" height="3" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<rect x="344.5" y="108.47" width="3" height="3" rx="0" fill="#e0693e" stroke="none" stroke-width="1"/>
+<line x1="496" y1="134.88" x2="596" y2="134.88" stroke="#48a05a" stroke-width="1.4"/>
+<line x1="496" y1="88.51" x2="596" y2="88.51" stroke="#48a05a" stroke-width="1.4"/>
+<line x1="496" y1="134.88" x2="496" y2="88.51" stroke="#48a05a" stroke-width="1.4"/>
+<line x1="596" y1="134.88" x2="596" y2="88.51" stroke="#48a05a" stroke-width="1.4"/>
+<line x1="546" y1="170.92" x2="546" y2="134.88" stroke="#48a05a" stroke-width="1"/>
+<line x1="546" y1="88.51" x2="546" y2="40.69" stroke="#48a05a" stroke-width="1"/>
+<line x1="521" y1="170.92" x2="571" y2="170.92" stroke="#48a05a" stroke-width="1"/>
+<line x1="521" y1="40.69" x2="571" y2="40.69" stroke="#48a05a" stroke-width="1"/>
+<rect x="496" y="88.51" width="100" height="46.37" rx="0" fill="rgba(72,160,90,0.18)" stroke="#48a05a" stroke-width="1"/>
+<line x1="496" y1="117.71" x2="596" y2="117.71" stroke="#48a05a" stroke-width="2"/>
+<rect x="544.5" y="169.42" width="3" height="3" rx="0" fill="#48a05a" stroke="none" stroke-width="1"/>
+<rect x="544.5" y="39.19" width="3" height="3" rx="0" fill="#48a05a" stroke="none" stroke-width="1"/>
+<rect x="544.5" y="133.38" width="3" height="3" rx="0" fill="#48a05a" stroke="none" stroke-width="1"/>
+<rect x="544.5" y="87.01" width="3" height="3" rx="0" fill="#48a05a" stroke="none" stroke-width="1"/>
+</svg>
+</div>
+<figcaption>Figure 2. Box plots of 22 samples per arm.</figcaption>
+</figure>
+<figure class="plot" id="fig-3">
+<div class="plot-wrap live-canvas-wrap">
+<svg role="img" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" width="660" height="240" viewBox="0 0 660 240" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif"><title>The same samples, without the summary</title>
+<rect width="660" height="240" fill="#ffffff"/>
+<line x1="18.56" y1="147.59" x2="646" y2="147.59" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="18.56" y1="80.04" x2="646" y2="80.04" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="122.09" y1="30" x2="122.09" y2="209.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="238.64" y1="30" x2="238.64" y2="209.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="355.2" y1="30" x2="355.2" y2="209.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="471.75" y1="30" x2="471.75" y2="209.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="588.3" y1="30" x2="588.3" y2="209.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="18.56" y1="209.56" x2="646" y2="209.56" stroke="#788090" stroke-width="1"/>
+<line x1="18.56" y1="30" x2="18.56" y2="209.56" stroke="#788090" stroke-width="1"/>
+<line x1="15.56" y1="147.59" x2="18.56" y2="147.59" stroke="#788090" stroke-width="0.8"/>
+<text x="11.56" y="147.59" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="15.56" y1="80.04" x2="18.56" y2="80.04" stroke="#788090" stroke-width="0.8"/>
+<text x="11.56" y="80.04" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">2</text>
+<line x1="122.09" y1="209.56" x2="122.09" y2="212.56" stroke="#788090" stroke-width="0.8"/>
+<text x="122.09" y="215.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-1</text>
+<line x1="238.64" y1="209.56" x2="238.64" y2="212.56" stroke="#788090" stroke-width="0.8"/>
+<text x="238.64" y="215.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="355.2" y1="209.56" x2="355.2" y2="212.56" stroke="#788090" stroke-width="0.8"/>
+<text x="355.2" y="215.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">1</text>
+<line x1="471.75" y1="209.56" x2="471.75" y2="212.56" stroke="#788090" stroke-width="0.8"/>
+<text x="471.75" y="215.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="588.3" y1="209.56" x2="588.3" y2="212.56" stroke="#788090" stroke-width="0.8"/>
+<text x="588.3" y="215.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">3</text>
+<text x="18.56" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">The same samples, without the summary</text>
+<rect x="333.6" y="116.95" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="297.14" y="126.85" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="253.52" y="140.49" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="283.36" y="130.96" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="262.25" y="137.63" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="51.8" y="197.94" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="262.45" y="137.56" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="227.67" y="149.07" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="224.02" y="150.28" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="119.72" y="180.16" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="431.11" y="91.34" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="166.78" y="167.96" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="273.93" y="133.89" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="50.55" y="198.31" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="336.68" y="116.16" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="106.34" y="183.46" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="383.52" y="104.51" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="321.87" y="120" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="315.36" y="121.74" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="240.56" y="144.78" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="247.5" y="142.47" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="483.52" y="74.43" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="399.8" y="100.26" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="170.99" y="166.77" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="282.09" y="131.35" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="126.74" y="178.42" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="472.45" y="78.12" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="255.15" y="139.95" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="78.22" y="190.61" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="504.14" y="67.62" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="319.52" y="120.62" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="244.43" y="143.5" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="260.67" y="138.14" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="272.67" y="134.29" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="90.35" y="187.46" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="146.14" y="173.51" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="424.92" y="93.19" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="488.23" y="72.87" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="460.71" y="81.99" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="346.6" y="113.68" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="166.18" y="168.12" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="372.33" y="107.32" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="248.76" y="142.06" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="277.27" y="132.85" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="514.55" y="64.26" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="331.58" y="117.46" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="545.39" y="54.93" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="513.85" y="64.49" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="418.26" y="95.13" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="374.57" y="106.76" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="201.29" y="157.66" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="403.48" y="99.26" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="255.85" y="139.72" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="567.33" y="48.9" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="474.45" y="77.45" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="308.93" y="123.5" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="389.17" y="103.06" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="349.59" y="112.94" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="349" y="113.08" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="389.46" y="102.98" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="362.65" y="109.71" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="356.71" y="111.18" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="243.9" y="143.67" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="222.66" y="150.73" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="260.8" y="138.1" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+<rect x="610.76" y="37.99" width="3.25" height="3.25" rx="0" fill="rgba(52,106,190,0.85)" stroke="none" stroke-width="1"/>
+</svg>
+</div>
+</figure>
+<h2 id="functions-without-ceremony">Functions without ceremony<a class="anchor" href="#functions-without-ceremony">#</a></h2>
+<div class="cell" id="cell-4">
+<div class="cell-head"><span class="lang">nano</span><button class="copy" type="button" data-copy-target="cell-4">copy</button></div>
+<pre><code>fn lorentz(x, gamma) {
+  gamma / (pi * (x * x + gamma * gamma))
+}
+
+let half_width = lorentz(_, 0.7)
+let xs = linspace(-6, 6, 400)
+let ys = map(xs, half_width)
+
+&quot;peak = {round(max(ys), 3)}, near x = {round(xs[index_of(ys, max(ys))], 2)}&quot;</code></pre>
+<div class="result good">
+<div class="value">peak = 0.455, near x = -0.02</div>
+</div>
+</div>
+<figure class="plot" id="fig-4">
+<div class="plot-wrap live-canvas-wrap">
+<svg role="img" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" width="660" height="260" viewBox="0 0 660 260" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif"><title>A resonance line shape</title>
+<rect width="660" height="260" fill="#ffffff"/>
+<line x1="46" y1="229.56" x2="646" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="135.27" x2="646" y2="135.27" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="40.98" x2="646" y2="40.98" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="78.14" y1="30" x2="78.14" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="145.11" y1="30" x2="145.11" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="212.07" y1="30" x2="212.07" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="279.04" y1="30" x2="279.04" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="346" y1="30" x2="346" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="412.96" y1="30" x2="412.96" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="479.93" y1="30" x2="479.93" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="546.89" y1="30" x2="546.89" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="613.86" y1="30" x2="613.86" y2="229.56" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="229.56" x2="646" y2="229.56" stroke="#788090" stroke-width="1"/>
+<line x1="46" y1="30" x2="46" y2="229.56" stroke="#788090" stroke-width="1"/>
+<line x1="43" y1="229.56" x2="46" y2="229.56" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="229.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="43" y1="135.27" x2="46" y2="135.27" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="135.27" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0.5</text>
+<line x1="43" y1="40.98" x2="46" y2="40.98" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="40.98" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1</text>
+<line x1="78.14" y1="229.56" x2="78.14" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="78.14" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-8</text>
+<line x1="145.11" y1="229.56" x2="145.11" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="145.11" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-6</text>
+<line x1="212.07" y1="229.56" x2="212.07" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="212.07" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-4</text>
+<line x1="279.04" y1="229.56" x2="279.04" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="279.04" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">-2</text>
+<line x1="346" y1="229.56" x2="346" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="346" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="412.96" y1="229.56" x2="412.96" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="412.96" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="479.93" y1="229.56" x2="479.93" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="479.93" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">4</text>
+<line x1="546.89" y1="229.56" x2="546.89" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="546.89" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">6</text>
+<line x1="613.86" y1="229.56" x2="613.86" y2="232.56" stroke="#788090" stroke-width="0.8"/>
+<text x="613.86" y="235.56" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">8</text>
+<text x="46" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">A resonance line shape</text>
+<text x="13" y="129.78" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 13 129.78)">intensity</text>
+<polyline points="78.14,223.95 80.38,223.86 82.61,223.77 84.84,223.67 87.07,223.57 89.3,223.47 91.54,223.37 93.77,223.26 96,223.15 98.23,223.04 100.46,222.92 102.7,222.81 104.93,222.68 107.16,222.56 109.39,222.43 111.63,222.3 113.86,222.17 116.09,222.03 118.32,221.89 120.55,221.74 122.79,221.59 125.02,221.44 127.25,221.28 129.48,221.11 131.71,220.94 133.95,220.77 136.18,220.59 138.41,220.41 140.64,220.22 142.88,220.02 145.11,219.82 147.34,219.61 149.57,219.39 151.8,219.17 154.04,218.94 156.27,218.71 158.5,218.46 160.73,218.21 162.96,217.95 165.2,217.68 167.43,217.4 169.66,217.11 171.89,216.81 174.13,216.5 176.36,216.18 178.59,215.85 180.82,215.5 183.05,215.14 185.29,214.77 187.52,214.38 189.75,213.98 191.98,213.57 194.21,213.14 196.45,212.69 198.68,212.22 200.91,211.73 203.14,211.23 205.38,210.7 207.61,210.15 209.84,209.57 212.07,208.98 214.3,208.35 216.54,207.7 218.77,207.02 221,206.31 223.23,205.56 225.46,204.78 227.7,203.97 229.93,203.11 232.16,202.22 234.39,201.28 236.63,200.29 238.86,199.26 241.09,198.17 243.32,197.03 245.55,195.83 247.79,194.57 250.02,193.24 252.25,191.84 254.48,190.36 256.71,188.81 258.95,187.17 261.18,185.44 263.41,183.61 265.64,181.68 267.88,179.64 270.11,177.48 272.34,175.2 274.57,172.79 276.8,170.24 279.04,167.54 281.27,164.69 283.5,161.67 285.73,158.48 287.96,155.1 290.2,151.54 292.43,147.78 294.66,143.82 296.89,139.65 299.13,135.27 301.36,130.67 303.59,125.86 305.82,120.85 308.05,115.63 310.29,110.24 312.52,104.69 314.75,99 316.98,93.22 319.21,87.4 321.45,81.58 323.68,75.84 325.91,70.24 328.14,64.88 330.38,59.84 332.61,55.21 334.84,51.1 337.07,47.58 339.3,44.75 341.54,42.67 343.77,41.41 346,40.98 348.23,41.41 350.46,42.67 352.7,44.75 354.93,47.58 357.16,51.1 359.39,55.21 361.63,59.84 363.86,64.88 366.09,70.24 368.32,75.84 370.55,81.58 372.79,87.4 375.02,93.22 377.25,99 379.48,104.69 381.71,110.24 383.95,115.63 386.18,120.85 388.41,125.86 390.64,130.67 392.88,135.27 395.11,139.65 397.34,143.82 399.57,147.78 401.8,151.54 404.04,155.1 406.27,158.48 408.5,161.67 410.73,164.69 412.96,167.54 415.2,170.24 417.43,172.79 419.66,175.2 421.89,177.48 424.13,179.64 426.36,181.68 428.59,183.61 430.82,185.44 433.05,187.17 435.29,188.81 437.52,190.36 439.75,191.84 441.98,193.24 444.21,194.57 446.45,195.83 448.68,197.03 450.91,198.17 453.14,199.26 455.38,200.29 457.61,201.28 459.84,202.22 462.07,203.11 464.3,203.97 466.54,204.78 468.77,205.56 471,206.31 473.23,207.02 475.46,207.7 477.7,208.35 479.93,208.98 482.16,209.57 484.39,210.15 486.62,210.7 488.86,211.23 491.09,211.73 493.32,212.22 495.55,212.69 497.79,213.14 500.02,213.57 502.25,213.98 504.48,214.38 506.71,214.77 508.95,215.14 511.18,215.5 513.41,215.85 515.64,216.18 517.88,216.5 520.11,216.81 522.34,217.11 524.57,217.4 526.8,217.68 529.04,217.95 531.27,218.21 533.5,218.46 535.73,218.71 537.96,218.94 540.2,219.17 542.43,219.39 544.66,219.61 546.89,219.82 549.13,220.02 551.36,220.22 553.59,220.41 555.82,220.59 558.05,220.77 560.29,220.94 562.52,221.11 564.75,221.28 566.98,221.44 569.21,221.59 571.45,221.74 573.68,221.89 575.91,222.03 578.14,222.17 580.38,222.3 582.61,222.43 584.84,222.56 587.07,222.68 589.3,222.81 591.54,222.92 593.77,223.04 596,223.15 598.23,223.26 600.46,223.37 602.7,223.47 604.93,223.57 607.16,223.67 609.39,223.77 611.63,223.86 613.86,223.95" fill="none" stroke="#346abe" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
+</div>
+<figcaption>Figure 4. Plot formulas are evaluated by a small expression language that ships with the document.</figcaption>
+</figure>
+<aside class="note note-warning">
+<div class="note-label">WARNING</div>
+<p class="note-body">Formula plots can be made interactive. Declare a widget, bind it, and the
+figure redraws live in HTML while Markdown and PDF keep the initial value.</p>
+</aside>
+<h2 id="interactive-figures">Interactive figures<a class="anchor" href="#interactive-figures">#</a></h2>
+<div class="widget widget-slider" id="w-1">
+<label for="w-1">damping rate</label>
+<input type="range" id="w-1" data-var="t" min="0.1" max="3" step="0.05" value="0.9">
+<span class="value" data-var-readout="t">0.9</span>
+</div>
+<figure class="plot" id="fig-5">
+<div class="plot-wrap live-canvas-wrap">
+<svg role="img" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" width="660" height="260" viewBox="0 0 660 260" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif"><title>Drag the slider</title>
+<rect width="660" height="260" fill="#ffffff"/>
+<line x1="46" y1="213.22" x2="646" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="126.8" x2="646" y2="126.8" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="40.37" x2="646" y2="40.37" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="78.14" y1="30" x2="78.14" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="185.29" y1="30" x2="185.29" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="292.43" y1="30" x2="292.43" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="399.57" y1="30" x2="399.57" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="506.71" y1="30" x2="506.71" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="613.86" y1="30" x2="613.86" y2="213.22" stroke="#e4e7ee" stroke-width="0.7" stroke-dasharray="2,3"/>
+<line x1="46" y1="213.22" x2="646" y2="213.22" stroke="#788090" stroke-width="1"/>
+<line x1="46" y1="30" x2="46" y2="213.22" stroke="#788090" stroke-width="1"/>
+<line x1="43" y1="213.22" x2="46" y2="213.22" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="213.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="43" y1="126.8" x2="46" y2="126.8" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="126.8" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">0.5</text>
+<line x1="43" y1="40.37" x2="46" y2="40.37" stroke="#788090" stroke-width="0.8"/>
+<text x="39" y="40.37" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="end" dominant-baseline="central">1</text>
+<line x1="78.14" y1="213.22" x2="78.14" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="78.14" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="185.29" y1="213.22" x2="185.29" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="185.29" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">1</text>
+<line x1="292.43" y1="213.22" x2="292.43" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="292.43" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">2</text>
+<line x1="399.57" y1="213.22" x2="399.57" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="399.57" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">3</text>
+<line x1="506.71" y1="213.22" x2="506.71" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="506.71" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">4</text>
+<line x1="613.86" y1="213.22" x2="613.86" y2="216.22" stroke="#788090" stroke-width="0.8"/>
+<text x="613.86" y="219.22" font-size="10" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">5</text>
+<text x="46" y="12" font-size="14" fill="#1e222a" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="bold" text-anchor="start" dominant-baseline="hanging">Drag the slider</text>
+<text x="346" y="246" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="hanging">time</text>
+<text x="13" y="121.61" font-size="11" fill="#7a8292" font-family="Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif" font-weight="normal" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 13 121.61)">amplitude</text>
+<polyline points="78.14,40.37 80.38,40.45 82.61,40.67 84.84,41.04 87.07,41.57 89.3,42.24 91.54,43.05 93.77,44.01 96,45.11 98.23,46.34 100.46,47.71 102.7,49.21 104.93,50.84 107.16,52.6 109.39,54.47 111.63,56.45 113.86,58.55 116.09,60.75 118.32,63.05 120.55,65.44 122.79,67.92 125.02,70.48 127.25,73.12 129.48,75.83 131.71,78.61 133.95,81.44 136.18,84.32 138.41,87.25 140.64,90.23 142.88,93.23 145.11,96.26 147.34,99.32 149.57,102.39 151.8,105.48 154.04,108.56 156.27,111.65 158.5,114.73 160.73,117.81 162.96,120.86 165.2,123.9 167.43,126.91 169.66,129.89 171.89,132.84 174.13,135.75 176.36,138.62 178.59,141.45 180.82,144.23 183.05,146.96 185.29,149.63 187.52,152.25 189.75,154.82 191.98,157.32 194.21,159.77 196.45,162.15 198.68,164.47 200.91,166.72 203.14,168.91 205.38,171.03 207.61,173.08 209.84,175.07 212.07,176.99 214.3,178.84 216.54,180.63 218.77,182.35 221,184.01 223.23,185.6 225.46,187.12 227.7,188.59 229.93,189.99 232.16,191.33 234.39,192.61 236.63,193.84 238.86,195 241.09,196.11 243.32,197.17 245.55,198.18 247.79,199.13 250.02,200.04 252.25,200.89 254.48,201.7 256.71,202.47 258.95,203.2 261.18,203.88 263.41,204.53 265.64,205.14 267.88,205.71 270.11,206.24 272.34,206.75 274.57,207.22 276.8,207.67 279.04,208.08 281.27,208.47 283.5,208.83 285.73,209.17 287.96,209.49 290.2,209.78 292.43,210.05 294.66,210.31 296.89,210.54 299.13,210.76 301.36,210.97 303.59,211.16 305.82,211.33 308.05,211.49 310.29,211.64 312.52,211.78 314.75,211.9 316.98,212.02 319.21,212.13 321.45,212.22 323.68,212.31 325.91,212.4 328.14,212.47 330.38,212.54 332.61,212.61 334.84,212.66 337.07,212.72 339.3,212.77 341.54,212.81 343.77,212.85 346,212.89 348.23,212.92 350.46,212.95 352.7,212.98 354.93,213 357.16,213.02 359.39,213.04 361.63,213.06 363.86,213.08 366.09,213.09 368.32,213.11 370.55,213.12 372.79,213.13 375.02,213.14 377.25,213.15 379.48,213.16 381.71,213.16 383.95,213.17 386.18,213.18 388.41,213.18 390.64,213.19 392.88,213.19 395.11,213.19 397.34,213.2 399.57,213.2 401.8,213.2 404.04,213.2 406.27,213.21 408.5,213.21 410.73,213.21 412.96,213.21 415.2,213.21 417.43,213.21 419.66,213.21 421.89,213.21 424.13,213.21 426.36,213.22 428.59,213.22 430.82,213.22 433.05,213.22 435.29,213.22 437.52,213.22 439.75,213.22 441.98,213.22 444.21,213.22 446.45,213.22 448.68,213.22 450.91,213.22 453.14,213.22 455.38,213.22 457.61,213.22 459.84,213.22 462.07,213.22 464.3,213.22 466.54,213.22 468.77,213.22 471,213.22 473.23,213.22 475.46,213.22 477.7,213.22 479.93,213.22 482.16,213.22 484.39,213.22 486.63,213.22 488.86,213.22 491.09,213.22 493.32,213.22 495.55,213.22 497.79,213.22 500.02,213.22 502.25,213.22 504.48,213.22 506.71,213.22 508.95,213.22 511.18,213.22 513.41,213.22 515.64,213.22 517.88,213.22 520.11,213.22 522.34,213.22 524.57,213.22 526.8,213.22 529.04,213.22 531.27,213.22 533.5,213.22 535.73,213.22 537.96,213.22 540.2,213.22 542.43,213.22 544.66,213.22 546.89,213.22 549.13,213.22 551.36,213.22 553.59,213.22 555.82,213.22 558.05,213.22 560.29,213.22 562.52,213.22 564.75,213.22 566.98,213.22 569.21,213.22 571.45,213.22 573.68,213.22 575.91,213.22 578.14,213.22 580.38,213.22 582.61,213.22 584.84,213.22 587.07,213.22 589.3,213.22 591.54,213.22 593.77,213.22 596,213.22 598.23,213.22 600.46,213.22 602.7,213.22 604.93,213.22 607.16,213.22 609.39,213.22 611.63,213.22 613.86,213.22" fill="none" stroke="#346abe" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
+<canvas class="live" id="live-5" width="660" height="260" data-var="t" data-formula="exp(-t * x)" data-var-name="x" data-xmin="0" data-xmax="5" data-points="240" data-style="line" data-fill="1" data-labels="f(x)" data-xlabel="time" data-ylabel="amplitude"></canvas>
+</div>
+</figure>
+<p>Current damping rate: &lt;span data-var-readout=&quot;t&quot;&gt;0.9&lt;/span&gt;</p>
+<h2 id="data-in-tables">Data in tables<a class="anchor" href="#data-in-tables">#</a></h2>
+<figure class="table-figure">
+<div class="table-wrap">
+<table class="zebra">
+<thead>
+<tr><th style="text-align:left">sample</th><th style="text-align:left">girth</th><th style="text-align:left">mass</th><th style="text-align:left">ratio</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>1.2</td><td>7.1</td><td>5.92</td></tr>
+<tr><td>2</td><td>1.6</td><td>12.4</td><td>7.75</td></tr>
+<tr><td>3</td><td>1.9</td><td>17.9</td><td>9.42</td></tr>
+<tr><td>4</td><td>2.3</td><td>24.2</td><td>10.52</td></tr>
+<tr><td>5</td><td>2.8</td><td>31</td><td>11.07</td></tr>
+<tr><td>6</td><td>3.1</td><td>38.4</td><td>12.39</td></tr>
+</tbody>
+</table>
+</div>
+<figcaption>Table 1. The same numbers, in a table.</figcaption>
+</figure>
+<p>Records and grouping work too:</p>
+<div class="cell" id="cell-5">
+<div class="cell-head"><span class="lang">nano</span><button class="copy" type="button" data-copy-target="cell-5">copy</button></div>
+<pre><code>let rows = [
+  {site: &quot;north&quot;, temp: 4.1, n: 88},
+  {site: &quot;north&quot;, temp: 6.3, n: 91},
+  {site: &quot;south&quot;, temp: 19.8, n: 74},
+  {site: &quot;south&quot;, temp: 21.2, n: 70}
+]
+
+let by_site = group_by(rows, fn(r) =&gt; r.site)
+&quot;mean temp, south = {round(mean(map(by_site.south, fn(r) =&gt; r.temp))), 1)}&quot;</code></pre>
+<div class="result good">
+<div class="value">mean temp, south = 21</div>
+</div>
+</div>
+<figure class="table-figure">
+<div class="table-wrap">
+<table class="zebra">
+<thead>
+<tr><th style="text-align:left">site</th><th style="text-align:left">n</th><th style="text-align:left">mean temp</th></tr>
+</thead>
+<tbody>
+<tr><td>north</td><td>2</td><td>5.2</td></tr>
+<tr><td>south</td><td>2</td><td>20.5</td></tr>
+</tbody>
+</table>
+</div>
+<figcaption>Table 2. Grouped by site.</figcaption>
+</figure>
+<h2 id="math-notes-and-media">Math, notes and media<a class="anchor" href="#math-notes-and-media">#</a></h2>
+<div class="math-display" data-tex="\hat{\beta} = (X^{\top} X)^{-1} X^{\top} y">\hat{\beta} = (X^{\top} X)^{-1} X^{\top} y</div>
+<p>Inline math such as <span class="math" data-tex="e^{i\pi} + 1 = 0">e^{i\pi} + 1 = 0</span> is typeset in the browser by a small
+built-in TeX renderer — no MathJax, no network, no build step. Display math
+works too:</p>
+<div class="math-display" data-tex="\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}">\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}</div>
+<aside class="note note-tip">
+<div class="note-label">TIP</div>
+<p class="note-body"><code>@note</code>, <code>@tip</code>, <code>@warning</code> and <code>@info</code> all render as callout panels in
+every output format.</p>
+</aside>
+<figure class="media" style="max-width:70%">
+<span class="svg-inline"><svg xmlns="http://www.w3.org/2000/svg" width="560" height="150" viewBox="0 0 560 150" font-family="Helvetica, Arial, sans-serif">
+  <rect width="560" height="150" fill="#ffffff"/>
+  <g font-size="13" fill="#1e222a" text-anchor="middle">
+    <rect x="18" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="83" y="80">raw data</text>
+    <rect x="215" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="280" y="80">analysis</text>
+    <rect x="412" y="52" width="130" height="46" rx="10" fill="#eef4fc" stroke="#346abe"/>
+    <text x="477" y="80">figure</text>
+  </g>
+  <g stroke="#7a8292" stroke-width="1.6" fill="none" marker-end="url(#a)">
+    <path d="M152 75 H205"/><path d="M349 75 H402"/>
+  </g>
+  <g font-size="10" fill="#7a8292" text-anchor="middle">
+    <text x="180" y="64">clean</text><text x="376" y="64">render</text>
+  </g>
+  <text x="18" y="128" font-size="11" fill="#7a8292">one .nano file in, three outputs out</text>
+</svg>
+</span>
+<figcaption>Figure 6. Images are embedded in HTML and PDF, and copied alongside the Markdown.</figcaption>
+</figure>
+<figure class="media">
+<div class="audio-card"><span class="audio-icon" aria-hidden="true">♪</span><div class="audio-meta"><span class="audio-name">assets/tone.wav</span><audio controls preload="none"><source src="assets/tone.wav" type="audio/wav"></audio></div></div>
+<figcaption>Figure 7. A short tone (placeholder asset).</figcaption>
+</figure>
+<figure class="media">
+<iframe src="https://example.org/reference" allowfullscreen loading="lazy" referrerpolicy="no-referrer" style="aspect-ratio:16/9;width:100%;border:0" title="https://example.org/reference"></iframe>
+<figcaption>Figure 8. External reference, embedded as an iframe in HTML.</figcaption>
+</figure>
+<h2 id="where-to-go-next">Where to go next<a class="anchor" href="#where-to-go-next">#</a></h2>
+<aside class="note note-tip">
+<div class="note-label">TIP</div>
+<p class="note-body">The full language reference lives in <code>docs/language.md</code>, and a task-oriented
+walkthrough lives in <code>docs/guide.md</code>. <code>nano build paper.nano -f pdf</code>
+writes one file; <code>-f all</code> writes Markdown, HTML and PDF side by side.</p>
+</aside>
+</main>
+<script>
+/* tex.js - nano: LaTeX-to-DOM typesetter (inline browser runtime) */
+(function (global) {
+  'use strict';
+
+  var RE_L = /[A-Za-z]/;
+  var RE_D = /[0-9]/;
+  var PRIME = '′';
+  var PRIME2 = '″';
+  var UNK = 'color:#b23';
+
+  /* ---------------- node model ----------------
+     text   : { t:'x', v:'...' }
+     element: { t:'e', n:'span', c:'class', s:'style', k:[...] }          */
+
+  function tx(v) { return { t: 'x', v: String(v) }; }
+  function el(n, c, k, s) { return { t: 'e', n: n, c: c || '', k: k || [], s: s || '' }; }
+  function one(ns) { return !ns.length ? null : ns.length === 1 ? ns[0] : grp(ns); }
+  function grp(ns) { return el('span', 'grp', ns); }
+  function hasc(n, c) { return (' ' + n.c + ' ').indexOf(' ' + c + ' ') >= 0; }
+  function add(dst, ns) { for (var i = 0; i < ns.length; i++) dst.push(ns[i]); return dst; }
+
+  function lvl(n) {
+    if (!n || n.t !== 'e') return 0;
+    var m = 0;
+    for (var i = 0; i < n.k.length; i++) { var l = lvl(n.k[i]); if (l > m) m = l; }
+    if (hasc(n, 'frac') || hasc(n, 'sqrt') || hasc(n, 'matrix') || hasc(n, 'tex-align') || hasc(n, 'tex-env')) return m + 1;
+    if (hasc(n, 'opbig') || hasc(n, 'acc') || hasc(n, 'scripts')) return m > 0 ? m : 1;
+    return m;
+  }
+  function maxLvl(ns) { var m = 0; for (var i = 0; i < ns.length; i++) { var l = lvl(ns[i]); if (l > m) m = l; } return m; }
+
+  /* ---------------- serializers ---------------- */
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function toHtml(n) {
+    if (!n) return '';
+    if (n.t === 'x') return esc(n.v);
+    var s = '<' + n.n, i, out = '';
+    if (n.c) s += ' class="' + esc(n.c) + '"';
+    if (n.s) s += ' style="' + esc(n.s) + '"';
+    if (!n.k.length) return s + '></' + n.n + '>';
+    for (i = 0; i < n.k.length; i++) out += toHtml(n.k[i]);
+    return s + '>' + out + '</' + n.n + '>';
+  }
+
+  function toDom(n, d) {
+    if (!n) return d.createTextNode('');
+    if (n.t === 'x') return d.createTextNode(n.v);
+    var e = d.createElement(n.n);
+    if (n.c) e.setAttribute('class', n.c);
+    if (n.s) e.setAttribute('style', n.s);
+    for (var i = 0; i < n.k.length; i++) e.appendChild(toDom(n.k[i], d));
+    return e;
+  }
+
+  /* ---------------- symbol tables ---------------- */
+
+  var GREEK = {
+    alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ϵ', varepsilon: 'ε',
+    zeta: 'ζ', eta: 'η', theta: 'θ', vartheta: 'ϑ', iota: 'ι', kappa: 'κ',
+    lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π', rho: 'ρ', sigma: 'σ',
+    tau: 'τ', upsilon: 'υ', phi: 'ϕ', varphi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω',
+    digamma: 'ϝ', varpi: 'ϖ', varrho: 'ϱ', varsigma: 'ς', epsilon1: 'ε'
+  };
+  var GREEK_UP = {
+    Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ', Xi: 'Ξ', Pi: 'Π',
+    Sigma: 'Σ', Upsilon: 'Υ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω'
+  };
+  var REL = {
+    ne: '≠', neq: '≠', le: '≤', leq: '≤', ge: '≥', geq: '≥', approx: '≈',
+    equiv: '≡', sim: '∼', simeq: '≃', cong: '≅', propto: '∝', subset: '⊂',
+    supset: '⊃', subseteq: '⊆', supseteq: '⊇', in: '∈', notin: '∉', ni: '∋',
+    to: '→', rightarrow: '→', gets: '←', leftarrow: '←', mapsto: '↦',
+    Rightarrow: '⇒', implies: '⇒', iff: '⟺', Leftrightarrow: '⟺',
+    leftrightarrow: '↔', perp: '⊥', parallel: '∥', mid: '∣', doteq: '≐',
+    ll: '≪', gg: '≫', prec: '≺', succ: '≻', preceq: '⪯', succeq: '⪰',
+    asymp: '≍', nsim: '≁', models: '⊨', vdash: '⊢', bowtie: '⋈', nmid: '∤',
+    nparallel: '∦', nsubseteq: '⊈', ngeq: '≱', nleq: '≰', iff1: '⟺'
+  };
+  var OPS = {
+    pm: '±', mp: '∓', times: '×', div: '÷', cdot: '⋅', ast: '∗', star: '⋆',
+    circ: '∘', bullet: '•', oplus: '⊕', ominus: '⊖', otimes: '⊗',
+    oslash: '⊘', odot: '⊙', cap: '∩', cup: '∪', wedge: '∧', land: '∧',
+    vee: '∨', lor: '∨', neg: '¬', lnot: '¬', emptyset: '∅',
+    varnothing: '∅', forall: '∀', exists: '∃', nexists: '∄', top: '⊤',
+    bot: '⊥', dagger: '†', ddagger: '‡', dots: '…', ldots: '…', sdot: '⋅',
+    colon: ':', ratio: '∕', slash: '/', backslash: '∖', uplus: '⊎',
+    sqcup: '⊔', veebar: '⊻', barwedge: '⊼', triangleq: '≜', circeq: '≗',
+    bumpeq: '≎', cupdot: '⨿', pitchfork: '⋔', dotplus: '∔'
+  };
+  var MISC = {
+    infty: '∞', partial: '∂', nabla: '∇', cdots: '⋯', vdots: '⋮',
+    ddots: '⋱', hbar: 'ℏ', ell: 'ℓ', Re: 'ℜ', Im: 'ℑ', angle: '∠',
+    degree: '°', prime: PRIME, ellipsis: '…', surd: '√', flat: '♭',
+    natural: '♮', sharp: '♯', clubsuit: '♣', diamondsuit: '♢', heartsuit: '♥',
+    spadesuit: '♠', checkmark: '✓', therefore: '∴', because: '∵', complement: '∁'
+  };
+  var OPNAME = {
+    sin: 'sin', cos: 'cos', tan: 'tan', cot: 'cot', sec: 'sec', csc: 'csc',
+    arcsin: 'arcsin', arccos: 'arccos', arctan: 'arctan', arccot: 'arccot',
+    arccsc: 'arccsc', arcsec: 'arcsec', sinh: 'sinh', cosh: 'cosh',
+    tanh: 'tanh', coth: 'coth', exp: 'exp', log: 'log', ln: 'ln', lg: 'lg',
+    det: 'det', dim: 'dim', ker: 'ker', deg: 'deg', gcd: 'gcd', arg: 'arg',
+    hom: 'hom', Pr: 'Pr', injlim: 'inj lim'
+  };
+  var BIGOP = {
+    sum: '∑', prod: '∏', coprod: '∐', int: '∫', iint: '∬', iiint: '∭',
+    oint: '∮', bigcup: '⋃', bigcap: '⋂', bigvee: '⋁', bigwedge: '⋀',
+    bigoplus: '⨁', bigotimes: '⨂', bigsqcup: '⨆', lim: 'lim',
+    limsup: 'lim sup', liminf: 'lim inf', max: 'max', min: 'min',
+    sup: 'sup', inf: 'inf', argmax: 'arg max', argmin: 'arg min'
+  };
+  var LIMLIKE = { lim: 1, limsup: 1, liminf: 1, max: 1, min: 1, sup: 1, inf: 1, argmax: 1, argmin: 1 };
+  var ACCENT_MARK = {
+    hat: '̂', widehat: '̂', bar: '̄', vec: '⃗', dot: '̇', ddot: '̈',
+    tilde: '̃', widetilde: '̃', mathring: '̊', breve: '̆', check: '̌',
+    acute: '́', grave: '̀', overrightarrow: '⟶', overleftarrow: '⟵',
+    overbrace: null, underbrace: null
+  };
+  var OVERLINE = { overline: 1, underline: 1 };
+  var CSP = {
+    ',': ['sp-thin', 0.167], ':': ['sp-med', 0.222], ';': ['sp-thick', 0.278],
+    '>': ['sp-thick', 0.278], '!': ['sp-neg', -0.167], ' ': ['sp-norm', 0.333]
+  };
+  var DELIM = {
+    '{': '{', '}': '}', langle: '⟨', rangle: '⟩', Vert: '‖', vert: '|',
+    backslash: '∖', uparrow: '↑', downarrow: '↓', lfloor: '⌊', rfloor: '⌋',
+    lceil: '⌈', rceil: '⌉', upharpoonright: '↾', upharpoonleft: '↼'
+  };
+  var DELIMCHAR = { '(': '(', ')': ')', '[': '[', ']': ']', '|': '|', '/': '/', '.': '', '<': '⟨', '>': '⟩' };
+  var BB = Array.from('𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ');
+  var SERIF = "Georgia,'Times New Roman',serif";
+  var SANS = "Helvetica,Arial,'Segoe UI','Liberation Sans',sans-serif";
+  var MONO = "Menlo,Consolas,'Liberation Mono',monospace";
+
+  /* ---------------- tokenizer ---------------- */
+
+  function tokenize(src) {
+    var out = [], i = 0, n = src.length, j, c, d, name, num;
+    while (i < n) {
+      c = src.charAt(i);
+      if (c === '\\') {
+        d = src.charAt(i + 1);
+        if (d === '') { out.push({ k: 'cs', v: '', s: i, e: i + 1 }); i++; continue; }
+        if (RE_L.test(d)) {
+          j = i + 1; name = '';
+          while (j < n && RE_L.test(src.charAt(j))) { name += src.charAt(j); j++; }
+          out.push({ k: 'cmd', v: name, s: i, e: j }); i = j; continue;
+        }
+        j = i + 2;
+        out.push(d === '\\' ? { k: 'cmd', v: '\\', s: i, e: j } : { k: 'cs', v: d, s: i, e: j });
+        i = j; continue;
+      }
+      if (c === '{') { out.push({ k: 'lb', s: i, e: i + 1 }); i++; continue; }
+      if (c === '}') { out.push({ k: 'rb', s: i, e: i + 1 }); i++; continue; }
+      if (c === '^') { out.push({ k: 'sup', s: i, e: i + 1 }); i++; continue; }
+      if (c === '_') { out.push({ k: 'sub', s: i, e: i + 1 }); i++; continue; }
+      if (c === "'") { out.push({ k: 'prime', s: i, e: i + 1 }); i++; continue; }
+      if (c === '&') { out.push({ k: 'amp', s: i, e: i + 1 }); i++; continue; }
+      if (c === '~') { out.push({ k: 'nbsp', s: i, e: i + 1 }); i++; continue; }
+      if (c === ' ' || c === '\t' || c === '\n' || c === '\r') { out.push({ k: 'sp', s: i, e: i + 1 }); i++; continue; }
+      if (RE_D.test(c)) {
+        num = ''; j = i;
+        while (j < n && RE_D.test(src.charAt(j))) { num += src.charAt(j); j++; }
+        if (src.charAt(j) === '.' && RE_D.test(src.charAt(j + 1) || '')) {
+          num += '.'; j++;
+          while (j < n && RE_D.test(src.charAt(j))) { num += src.charAt(j); j++; }
+        }
+        out.push({ k: 'num', v: num, s: i, e: j }); i = j; continue;
+      }
+      if (RE_L.test(c)) {
+        j = i; name = '';
+        while (j < n && RE_L.test(src.charAt(j))) { name += src.charAt(j); j++; }
+        out.push({ k: 'id', v: name, s: i, e: j }); i = j; continue;
+      }
+      out.push({ k: 'chr', v: c, s: i, e: i + 1 }); i++;
+    }
+    return out;
+  }
+
+  /* ---------------- parser state ---------------- */
+
+  var p = null;
+  var ST = { up: false, bf: false, it: false, bb: false, cal: false, sf: false, tt: false };
+
+  function st(over) {
+    var c = {}, k;
+    for (k in ST) c[k] = ST[k];
+    for (k in over) c[k] = over[k];
+    return c;
+  }
+  function inSt(over, fn) { var old = p.st; p.st = st(over); var r = fn(); p.st = old; return r; }
+
+  function isRb(t) { return t.k === 'rb'; }
+  function isScript(t) { return t.k === 'sup' || t.k === 'sub' || t.k === 'rb' || t.k === 'amp' || (t.k === 'cmd' && t.v === '\\'); }
+  function isRight(t) { return t.k === 'cmd' && t.v === 'right'; }
+  function isEnd(t) { return t.k === 'cmd' && t.v === 'end'; }
+  function isRowEnd(t) { return t.k === 'cmd' && t.v === '\\'; }
+  function isAmp(t) { return t.k === 'amp'; }
+  function noStop() { return false; }
+
+  function parseUntil(stop) {
+    var out = [];
+    while (p.i < p.t.length) {
+      if (stop(p.t[p.i])) break;
+      var before = p.i, ns = parseItem();
+      if (p.i === before) p.i++;
+      add(out, ns);
+    }
+    return out;
+  }
+
+  function parseArg() {
+    var t = p.t[p.i];
+    if (!t) return [];
+    if (t.k === 'sp') { p.i++; return parseArg(); }
+    if (t.k === 'lb') {
+      p.i++;
+      var inner = parseUntil(isRb);
+      if (p.t[p.i] && p.t[p.i].k === 'rb') p.i++;
+      return inner;
+    }
+    return parseItem();
+  }
+
+  /* one atom, no scripts collected at this level */
+  function oneAtom() {
+    var outer = p.noScript, last = p.last;
+    p.noScript++;
+    p.last = 'none';
+    var a = parseAtom();
+    p.noScript = outer;
+    p.last = last;
+    return a;
+  }
+
+  function isRelTok(t) {
+    if (!t) return false;
+    if (t.k === 'chr') return t.v === '=' || t.v === '<' || t.v === '>' || t.v === ':';
+    if (t.k === 'cmd') return !!REL[t.v];
+    return false;
+  }
+
+  /* argument of a sub/superscript: unbraced forms take a single atom, plus
+     "rel atom" pairs when a further script follows (e.g. \_i=1^n)          */
+  function scriptArg() {
+    var t = p.t[p.i];
+    if (!t) return [];
+    if (t.k === 'sp') { p.i++; return scriptArg(); }
+    if (t.k === 'prime') { p.i++; return [el('span', 'prime', [tx(PRIME)], 'font-style:normal')]; }
+    if (t.k === 'lb') return parseArg();
+    var out = oneAtom();
+    var mark = p.i, extra = [], j, u;
+    for (;;) {
+      j = p.i;
+      while (p.t[p.i] && p.t[p.i].k === 'sp') p.i++;
+      u = p.t[p.i];
+      if (!isRelTok(u)) { if (p.i !== j) p.i = j; break; }
+      p.i++;
+      add(extra, oneAtom());
+    }
+    u = p.t[p.i];
+    if (u && (u.k === 'sup' || u.k === 'sub')) add(out, extra);
+    else p.i = mark;
+    return out;
+  }
+
+  function parseItem() {
+    var base = parseAtom();
+    if (p.pendingNot) {
+      for (var q = 0; q < base.length; q++) {
+        if (base[q].t === 'e' && (hasc(base[q], 'mo') || hasc(base[q], 'delim') || hasc(base[q], 'op'))) {
+          base[q] = notted(base[q]);
+          p.pendingNot = false;
+          break;
+        }
+      }
+    }
+    if (!base.length) {
+      var t = p.t[p.i];
+      if (t && !p.noScript && (t.k === 'sup' || t.k === 'sub' || t.k === 'prime')) {
+        var orphan = collect();
+        if (orphan) return [makeScripts(null, orphan)];
+      }
+      return base;
+    }
+    var s = p.noScript ? null : collect();
+    if (!s) return base;
+    return [makeScripts(one(base), s)];
+  }
+
+  function collect() {
+    var s = null, t;
+    while (p.i < p.t.length) {
+      t = p.t[p.i];
+      if (t.k === 'sup') { p.i++; s = s || {}; s.sup = scriptArg(); }
+      else if (t.k === 'sub') { p.i++; s = s || {}; s.sub = scriptArg(); }
+      else if (t.k === 'prime') { p.i++; s = s || {}; s.prime = (s.prime || 0) + 1; }
+      else break;
+    }
+    return s;
+  }
+
+  function notted(n) {
+    return el('span', 'not', [el('span', 'notslash', [tx('/')], 'position:absolute;left:-.08em;top:-.12em;font-size:.85em;line-height:1'), n],
+      'position:relative;display:inline-block');
+  }
+
+  function makeScripts(base, s) {
+    var sup = s.sup, sub = s.sub, i;
+    if (s.prime) {
+      var pn = el('span', 'prime', [tx(s.prime > 1 ? PRIME2 : PRIME)], 'font-style:normal');
+      if (sup) {
+        sup = sup.concat([el('span', 'pr', [], 'padding:0 .04em'), pn]);
+      } else sup = [pn];
+    }
+    if (base && base.bigop) {
+      var lim = p.display && !p.noLimits;
+      var kk = [];
+      if (lim && sup) kk.push(el('span', 'lim-over', sup, LIMSTYLE));
+      kk.push(base.k[0]);
+      if (lim && sub) kk.push(el('span', 'lim-under', sub, LIMSTYLE));
+      else if (sub || sup) kk.push(el('span', 'scripts', scriptKids(sub, sup)));
+      var o = el('span', 'opbig', kk);
+      o.bigop = true;
+      return o;
+    }
+    if (!base) return el('span', 'scripts', scriptKids(sub, sup));
+    return el('span', 'mscripts', [base, el('span', 'scripts', scriptKids(sub, sup))]);
+  }
+  function scriptKids(sub, sup) {
+    var k = [];
+    if (sub) k.push(el('sub', 'sub', sub));
+    if (sup) k.push(el('sup', 'sup', sup));
+    return k;
+  }
+  var LIMSTYLE = 'display:block;text-align:center;font-size:.7em;line-height:1.15';
+
+  /* ---------------- atoms ---------------- */
+
+  function parseAtom() {
+    var t = p.t[p.i];
+    if (!t) return [];
+    if (t.k === 'sp' || t.k === 'amp' || t.k === 'rb' || t.k === 'sup' || t.k === 'sub' || t.k === 'prime') return [];
+    p.i++;
+    if (t.k === 'lb') {
+      p.last = 'atom';
+      var outer = p.noScript, lastl = p.last;
+      p.noScript = 0;
+      p.last = 'none';
+      var inner = parseUntil(isRb);
+      p.noScript = outer;
+      p.last = lastl;
+      if (p.t[p.i] && p.t[p.i].k === 'rb') p.i++;
+      return [grp(inner)];
+    }
+    if (t.k === 'id') { p.last = 'atom'; return [identNode(t.v)]; }
+    if (t.k === 'num') { p.last = 'atom'; return [el('span', 'mn', [tx(t.v)], 'font-style:normal')]; }
+    if (t.k === 'chr') return [chrNode(t.v)];
+    if (t.k === 'nbsp') return [el('span', 'space sp-nbsp', [tx(' ')], 'white-space:pre')];
+    if (t.k === 'cmd') return runCmd(t.v);    if (t.k === 'cs') return runCs(t.v);
+    return [el('span', 'unk', [tx(t.v)], UNK)];
+  }
+
+  function identNode(name) {
+    var s = p.st;
+    if (s.bb) {
+      var b = '', i;
+      for (i = 0; i < name.length; i++) {
+        var ix = name.charCodeAt(i) & ~32;
+        b += (ix >= 65 && ix <= 90) ? BB[ix - 65] : name.charAt(i);
+      }
+      return el('span', 'bb', [tx(b)], 'font-style:normal;font-weight:400');
+    }
+    if (s.cal) return el('span', 'cal', [tx(name)], 'font-family:' + SERIF + ';font-style:italic');
+    if (s.sf) return el('span', 'mi sf', [tx(name)], 'font-family:' + SANS + ';font-style:normal');
+    if (s.tt) return el('span', 'mi tt', [tx(name)], 'font-family:' + MONO + ';font-style:normal');
+    if (s.bf) return el('span', 'mi bf', [tx(name)], 'font-weight:700;font-style:' + (s.up ? 'normal' : 'italic'));
+    if (s.up) return el('span', 'mi rm', [tx(name)], 'font-style:normal');
+    return el('span', 'mi', [tx(name)], 'font-style:italic');
+  }
+
+  function chrNode(v) {
+    if (v === '(' || v === '[') { p.last = 'open'; return el('span', 'delim', [tx(v)]); }
+    if (v === ')' || v === ']' || v === '|' || v === '/' || v === '.' || v === '!') {
+      p.last = 'close';
+      return el('span', 'delim' + (v === '|' ? ' vert' : ''), [tx(v)]);
+    }
+    if (v === '=' || v === '<' || v === '>') { p.last = 'rel'; return el('span', 'mo rel', [tx(v)]); }
+    if (v === '+' || v === '-') {
+      var bin = p.last === 'atom' || p.last === 'close' || p.last === 'rel';
+      p.last = 'op';
+      return el('span', 'mo' + (bin ? ' bin' : ' un'), [tx(v === '-' ? '−' : v)]);
+    }
+    if (v === '*') { p.last = 'op'; return el('span', 'mo bin', [tx('∗')]); }
+    if (v === ',' || v === ';') { p.last = 'punct'; return el('span', 'mo punct', [tx(v)]); }
+    if (v === ':') { p.last = 'rel'; return el('span', 'mo rel', [tx(':')]); }
+    if (v === '?') { p.last = 'close'; return el('span', 'mo', [tx(v)]); }
+    p.last = 'atom';
+    return el('span', 'mo', [tx(v)]);
+  }
+
+  /* ---------------- node builders ---------------- */
+
+  function spNode(cls, w) { return el('span', 'space ' + cls, [], 'width:' + w + 'em'); }
+  function opnameNode(name) { return el('span', 'opname', [tx(name)], 'padding-right:.15em'); }
+  function unkNode(s) { return el('span', 'unk', [tx(s)], UNK); }
+
+  function fracNode(num, den, extra) {
+    return el('span', 'frac' + (extra ? ' ' + extra : ''),
+      [el('span', 'num', num, 'display:block;padding:0 .2em'),
+       el('span', 'bar', [], 'display:block;border-top:1px solid currentColor'),
+       el('span', 'den', den, 'display:block;padding:0 .2em')],
+      'display:inline-block;vertical-align:middle;text-align:center;margin:0 .12em');
+  }
+
+  function sqrtNode(inner, idx) {
+    var k = [];
+    if (idx) k.push(el('span', 'idx', idx, 'font-size:.6em;margin:0 -.05em -.2em 0'));
+    k.push(el('span', 'root',
+      [el('span', 'rad', [tx('√')], 'font-size:1.5em;line-height:1'),
+       el('span', 'radx', inner)],
+      'display:inline-block;border-top:1px solid currentColor;padding:0 .1em 0 0'));
+    return el('span', 'sqrt', k, 'display:inline-block;white-space:nowrap;margin:0 .1em');
+  }
+
+  function delimNode(d, level) {
+    if (d === '') return null;
+    return el('span', 'delim' + (level > 0 ? ' big big' + Math.min(level, 5) : ''), [tx(d)]);
+  }
+
+  function readDelim() {
+    var t = p.t[p.i];
+    if (!t) return '';
+    if (t.k === 'chr') { p.i++; return DELIMCHAR[t.v] !== undefined ? DELIMCHAR[t.v] : t.v; }
+    if (t.k === 'cs') { p.i++; return t.v === '|' ? '‖' : (DELIM[t.v] !== undefined ? DELIM[t.v] : t.v); }
+    if (t.k === 'cmd') { p.i++; return DELIM[t.v] !== undefined ? DELIM[t.v] : (MISC[t.v] || t.v); }
+    return '';
+  }
+
+  function rawArg() {
+    var t = p.t[p.i];
+    if (!t) return '';
+    if (t.k === 'sp') { p.i++; return rawArg(); }
+    if (t.k !== 'lb') { p.i++; return typeof t.v === 'string' ? t.v : ''; }
+    var open = t, depth = 1, j = p.i + 1;
+    for (; j < p.t.length; j++) {
+      if (p.t[j].k === 'lb') depth++;
+      else if (p.t[j].k === 'rb') { depth--; if (depth === 0) break; }
+    }
+    var body = j < p.t.length ? p.src.slice(open.e, p.t[j].s) : p.src.slice(open.e);
+    p.i = j < p.t.length ? j + 1 : p.t.length;
+    return body;
+  }
+
+  /* ---------------- commands ---------------- */
+
+  var CMD = {};
+
+  CMD.frac = CMD.dfrac = CMD.cfrac = function () { return [fracNode(parseArg(), parseArg(), '')]; };
+  CMD.tfrac = function () { return [fracNode(parseArg(), parseArg(), 'tfrac')]; };
+  CMD.binom = CMD.dbinom = function () { return [fracNode(parseArg(), parseArg(), 'binom')]; };
+  CMD.tbinom = function () { return [fracNode(parseArg(), parseArg(), 'binom tfrac')]; };
+
+  CMD.sqrt = function () {
+    var idx = null, t = p.t[p.i];
+    while (t && t.k === 'sp') { p.i++; t = p.t[p.i]; }
+    if (t && (t.k === 'chr' || t.k === 'cs') && t.v === '[') {
+      p.i++;
+      var sub = [];
+      while (p.i < p.t.length) {
+        var u = p.t[p.i];
+        if ((u.k === 'chr' || u.k === 'cs') && u.v === ']') { p.i++; break; }
+        if (u.k === 'rb') break;
+        var before = p.i;
+        add(sub, parseItem());
+        if (p.i === before) p.i++;
+      }
+      idx = sub;
+    }
+    return [sqrtNode(parseArg(), idx)];
+  };
+
+  CMD.left = function () {
+    var open = readDelim();
+    var inner = parseUntil(isRight);
+    if (p.t[p.i] && isRight(p.t[p.i])) p.i++;
+    var close = readDelim();
+    var lv = maxLvl(inner);
+    var pair = [delimNode(open, lv)];
+    if (inner.length) pair.push(el('span', 'delim-in', [one(inner)], 'display:inline-block;vertical-align:middle'));
+    var cn = delimNode(close, lv);
+    if (cn) pair.push(cn);
+    return [el('span', 'delimpair', pair, 'display:inline-block;white-space:nowrap')];
+  };
+
+  function overUnder(name, under) {
+    CMD[name] = function () {
+      var a = parseArg(), b = parseArg();
+      return [under
+        ? el('span', 'underset', [one(b), el('span', 'scripts', a, 'display:block;text-align:center')], 'display:inline-block;text-align:center;vertical-align:middle')
+        : el('span', 'overset', [el('span', 'scripts', b, 'display:block;text-align:center'), one(a)], 'display:inline-block;text-align:center;vertical-align:middle')];
+    };
+  }
+  overUnder('overset', false);
+  overUnder('stackrel', false);
+  overUnder('underset', true);
+
+  /* text */
+  CMD.text = CMD.textnormal = CMD.textrm = CMD.mbox = CMD.hbox = function () {
+    return [el('span', 'mtext', [tx(rawArg())], 'font-style:normal')];
+  };
+  CMD.textbf = function () { return [el('span', 'mtext bf', [tx(rawArg())], 'font-style:normal;font-weight:700')]; };
+  CMD.textit = CMD.emph = function () { return [el('span', 'mtext it', [tx(rawArg())], 'font-style:italic')]; };
+  CMD.textsf = function () { return [el('span', 'mtext sf', [tx(rawArg())], 'font-style:normal;font-family:' + SANS)]; };
+  CMD.texttt = function () { return [el('span', 'mtext tt', [tx(rawArg())], 'font-style:normal;font-family:' + MONO)]; };
+  CMD.verb = function () { return [el('span', 'mtext', [tx(rawArg())])]; };
+  CMD.label = CMD.ref = CMD.cite = CMD.eqref = function () {
+    return [el('span', 'mtext ref', [tx(rawArg())], 'color:#7a8292')];
+  };
+
+  /* math styles */
+  CMD.mathrm = CMD.mathnormal = function () { return inSt({ up: true }, parseArg); };
+  CMD.mathbf = function () { return inSt({ bf: true }, parseArg); };
+  CMD.mathit = function () { return inSt({ it: true }, parseArg); };
+  CMD.mathsf = function () { return inSt({ sf: true, up: true }, parseArg); };
+  CMD.mathtt = function () { return inSt({ tt: true, up: true }, parseArg); };
+  CMD.mathbb = CMD.Bbb = function () { return inSt({ bb: true }, parseArg); };
+  CMD.mathcal = function () { return inSt({ cal: true }, parseArg); };
+  CMD.mathscr = function () { return inSt({ cal: true }, parseArg); };
+  CMD.operatorname = function () { return [opnameNode(rawArg())]; };
+  CMD.operatornamewithlimits = function () {
+    var o = el('span', 'opbig', [opnameNode(rawArg())]);
+    o.bigop = true;
+    return [o];
+  };
+  CMD.not = function () { p.pendingNot = true; return []; };
+  CMD.bmod = function () { return [el('span', 'mo bin', [tx('mod')])]; };
+  CMD.bf = CMD.bold = function () { return inSt({ bf: true }, parseArg); };
+  CMD.it = CMD.italic = function () { return inSt({ it: true, up: false }, parseArg); };
+  CMD.rm = function () { return inSt({ up: true, bf: false, it: false, cal: false, bb: false, sf: false, tt: false }, parseArg); };
+  CMD.em = CMD.it;
+  CMD.sf = function () { return inSt({ sf: true, tt: false }, parseArg); };
+  CMD.tt = function () { return inSt({ tt: true, sf: false }, parseArg); };
+  CMD.pmod = function () { return [el('span', 'mo', [tx('mod')])]; };
+
+  /* accents */
+  function accent(name, mark) {
+    CMD[name] = function () {
+      var inner = parseArg(), b = one(inner);
+      if (!b) b = el('span', 'accb', []);
+      if (OVERLINE[name] && name === 'overline') {
+        return [el('span', 'acc acc-over', [b], 'display:inline-block;border-top:1px solid currentColor')];
+      }
+      if (name === 'underline') {
+        return [el('span', 'acc acc-under', [b], 'display:inline-block;border-bottom:1px solid currentColor')];
+      }
+      if (name === 'overbrace') {
+        return [el('span', 'acc acc-over', [el('span', 'accb', [], 'border-top:2px solid currentColor;border-radius:.4em .4em 0 0')], 'display:inline-block;width:100%')];
+      }
+      if (name === 'underbrace') {
+        return [el('span', 'acc acc-under', [el('span', 'accb', [], 'border-bottom:2px solid currentColor;border-radius:0 0 .4em .4em')], 'display:inline-block;width:100%')];
+      }
+      return [el('span', 'acc acc-' + name, [b, el('span', 'accm', [tx(mark)],
+        'position:absolute;left:50%;top:0;transform:translateX(-50%);line-height:1;font-style:normal')],
+        'position:relative;display:inline-block')];
+    };
+  }
+  for (var an in ACCENT_MARK) accent(an, ACCENT_MARK[an]);
+  accent('underline', null);
+  accent('overline', null);
+  accent('underbrace', null);
+
+  /* spacing */
+  CMD.quad = function () { return [spNode('sp-quad', 1)]; };
+  CMD.qquad = function () { return [spNode('sp-qquad', 2)]; };
+  CMD.thinspace = function () { return [spNode('sp-thin', 0.167)]; };
+  CMD.medspace = function () { return [spNode('sp-med', 0.222)]; };
+  CMD.thickspace = function () { return [spNode('sp-thick', 0.278)]; };
+  CMD.negthinspace = function () { return [spNode('sp-neg', -0.167)]; };
+  CMD.space = function () { return [spNode('sp-norm', 0.25)]; };
+  CMD.nobreakspace = function () { return [el('span', 'space sp-nbsp', [tx('\u00a0')])]; };
+  CMD.hskip = CMD.mskip = CMD.kern = function () { return [spNode('sp-hskip', 0.25)]; };
+  CMD.phantom = CMD.hphantom = CMD.vphantom = function () { return parseArg(); };
+  CMD['\\'] = function () { return p.display ? [el('span', 'space sp-row', [], 'display:block;height:0')] : [spNode('sp-row', 0.4)]; };
+  CMD.linebreak = CMD['\\'];
+  CMD.newline = CMD['\\'];
+  CMD.hline = function () { return [el('span', 'hline', [], 'display:block;border-top:1px solid #9aa0ae')]; };
+  CMD.nolinebreak = CMD.nobreak = CMD.allowbreak = CMD.nnonumber = function () { return []; };
+  CMD.displaystyle = function () { p.display = true; return []; };
+  CMD.textstyle = CMD.scriptstyle = function () { p.display = false; return []; };
+  CMD.limits = function () { p.noLimits = false; return []; };
+  CMD.nolimits = function () { p.noLimits = true; return []; };
+  CMD.color = function () { var c = rawArg(); return [el('span', 'colored', parseArg(), 'color:' + (c || 'inherit'))]; };
+  CMD.raisebox = function () { parseArg(); return parseArg(); };
+  CMD.lowerbox = function () { parseArg(); return parseArg(); };
+  CMD.tag = function () { return [el('span', 'eqtag', [tx(rawArg())], 'float:right')]; };
+
+  /* sized delimiters */
+  var SIZED = { bigl: 2, bigr: 2, Bigl: 3, Bigr: 3, biggl: 4, biggr: 4, Biggl: 5, Biggr: 5 };
+  (function () {
+    for (var k in SIZED) (function (name) {
+      CMD[name] = function () {
+        var n = delimNode(readDelim(), SIZED[name]);
+        return n ? [n] : [];
+      };
+    })(k);
+  })();
+
+  /* ---------------- environments ---------------- */
+
+  function envName() {
+    var t = p.t[p.i];
+    while (t && t.k === 'sp') { p.i++; t = p.t[p.i]; }
+    if (t && t.k === 'lb') { p.i++; t = p.t[p.i]; }
+    var name = '';
+    if (t && (t.k === 'id' || t.k === 'chr')) { name = t.v; p.i++; }
+    while (p.t[p.i] && p.t[p.i].k === 'sp') p.i++;
+    if (p.t[p.i] && p.t[p.i].k === 'rb') p.i++;
+    return name;
+  }
+
+  function skipGroupToks(toks) {
+    if (!toks.length || toks[0].k !== 'lb') return;
+    var depth = 1, j = 1;
+    for (; j < toks.length; j++) {
+      if (toks[j].k === 'lb') depth++;
+      else if (toks[j].k === 'rb') { depth--; if (depth === 0) break; }
+    }
+    toks.splice(0, j + 1);
+  }
+
+  function skipGroup() {
+    if (!p.t[p.i] || p.t[p.i].k !== 'lb') return;
+    var depth = 1, j = p.i + 1;
+    for (; j < p.t.length; j++) {
+      if (p.t[j].k === 'lb') depth++;
+      else if (p.t[j].k === 'rb') { depth--; if (depth === 0) break; }
+    }
+    p.i = j < p.t.length ? j + 1 : p.t.length;
+  }
+
+  function readBody() {
+    var start = p.i, depth = 0, j = p.i, t;
+    if (p.t[j] && p.t[j].k === 'lb') { depth = 1; j++; }
+    for (; j < p.t.length; j++) {
+      t = p.t[j];
+      if (t.k === 'lb') depth++;
+      else if (t.k === 'rb') { depth--; if (depth <= 0) break; }
+      else if (t.k === 'cmd' && t.v === 'end' && depth === 0) break;
+    }
+    var toks = p.t.slice(start, j);
+    p.i = j;
+    if (p.t[p.i] && isEnd(p.t[p.i])) {
+      p.i++;
+      while (p.t[p.i] && p.t[p.i].k === 'sp') p.i++;
+      if (p.t[p.i] && (p.t[p.i].k === 'id' || p.t[p.i].k === 'chr')) p.i++;
+      skipGroup();
+    }
+    if (p.t[p.i] && p.t[p.i].k === 'rb') p.i++;
+    return toks;
+  }
+
+  function parseToks(toks) {
+    var t0 = p.t, i0 = p.i;
+    p.t = toks;
+    p.i = 0;
+    var out = parseUntil(noStop);
+    p.t = t0;
+    p.i = i0;
+    return out;
+  }
+
+  function splitDepth(toks, kind) {
+    var rows = [], cur = [], depth = 0, i, t;
+    for (i = 0; i < toks.length; i++) {
+      t = toks[i];
+      if (t.k === 'lb') depth++;
+      else if (t.k === 'rb' && depth > 0) depth--;
+      if (depth === 0 && kind(t)) { rows.push(cur); cur = []; continue; }
+      cur.push(t);
+    }
+    rows.push(cur);
+    return rows;
+  }
+
+  function inDisplay(fn) {
+    var was = p.display;
+    p.display = true;
+    var r = fn();
+    p.display = was;
+    return r;
+  }
+
+  var ENV = {};
+
+  function envDisplay(name) {
+    return function () {
+      var toks = readBody();
+      var inner = inDisplay(function () { return parseToks(toks); });
+      return [el('span', 'tex-env env-' + name, inner, 'display:block;margin:.7em 0;text-align:center')];
+    };
+  }
+  ENV.equation = envDisplay('equation');
+  ENV['equation*'] = envDisplay('equation');
+  ENV.displaymath = envDisplay('displaymath');
+  ENV.dmath = envDisplay('dmath');
+  ENV.multline = envDisplay('multline');
+  ENV['multline*'] = envDisplay('multline');
+  ENV.theorem = envDisplay('theorem');
+  ENV.proof = envDisplay('proof');
+  ENV.lemma = envDisplay('lemma');
+  ENV.definition = envDisplay('definition');
+  ENV.remark = envDisplay('remark');
+  ENV.corollary = envDisplay('corollary');
+  ENV.example = envDisplay('example');
+  ENV.subequations = envDisplay('equation');
+
+  function envAlign(name) {
+    return function () {
+      var rows = splitDepth(readBody(), isRowEnd);
+      while (rows.length > 1 && !rows[rows.length - 1].length) rows.pop();
+      var out = [], i, c, cells, k;
+      inDisplay(function () {
+        for (i = 0; i < rows.length; i++) {
+          cells = splitDepth(rows[i], isAmp);
+          if (cells.length < 2) {
+            out.push(el('span', 'mrow al-row al-center', parseToks(rows[i]), 'display:block;text-align:center;width:100%'));
+            continue;
+          }
+          k = [el('span', 'al-r', parseToks(cells[0]), 'flex:1 1 0;text-align:right'),
+               el('span', 'al-l', parseToks(cells[1]), 'flex:1 1 0;text-align:left')];
+          for (c = 2; c < cells.length; c++) add(k, parseToks(cells[c]));
+          out.push(el('span', 'mrow al-row', k, 'display:flex;align-items:center;gap:.9em;width:100%'));
+        }
+      });
+      return [el('span', 'tex-align env-' + name, out, 'display:block;margin:.7em 0;width:100%')];
+    };
+  }
+  ENV.align = envAlign('align');
+  ENV['align*'] = envAlign('align');
+  ENV.alignat = ENV['alignat*'] = envAlign('align');
+  ENV.flalign = ENV['flalign*'] = envAlign('align');
+  ENV.gather = ENV['gather*'] = envAlign('gather');
+
+  function envMatrix(name, spec) {
+    return function () {
+      if (spec) skipGroup();
+      var toks = readBody();
+      var rows = splitDepth(toks, isRowEnd);
+      while (rows.length > 1 && !rows[rows.length - 1].length) rows.pop();
+      var grid = [], cells = [], r, c, ncol = 0, ck;
+      for (r = 0; r < rows.length; r++) {
+        cells.push(splitDepth(rows[r], isAmp));
+        if (cells[r].length > ncol) ncol = cells[r].length;
+      }
+      if (!ncol) ncol = 1;
+      for (r = 0; r < cells.length; r++) {
+        ck = [];
+        for (c = 0; c < ncol; c++) ck.push(el('span', 'mcell', parseToks(cells[r][c] || []), 'padding:.12em .4em'));
+        grid.push(el('span', 'mrow mrow-grid', ck, 'display:contents'));
+      }
+      var base = name.replace('small', '');
+      var k = [];
+      if (base !== 'matrix') k.push(el('span', 'mbrace mbrace-l', [], 'display:inline-block;vertical-align:middle;width:.3em;border:1px solid currentColor;border-right:0'));
+      k.push(el('span', 'mgrid', grid,
+        'display:inline-grid;grid-template-columns:repeat(' + ncol + ',auto);justify-items:center;align-items:center;gap:.15em .1em;vertical-align:middle'));
+      if (base !== 'matrix' && base !== 'cases') k.push(el('span', 'mbrace mbrace-r', [], 'display:inline-block;vertical-align:middle;width:.3em;border:1px solid currentColor;border-left:0'));
+      return [el('span', 'matrix matrix-' + name, k, 'display:inline-block;vertical-align:middle;margin:0 .15em')];
+    };
+  }
+  var MATRIXES = ['matrix', 'smallmatrix', 'pmatrix', 'bmatrix', 'Bmatrix', 'vmatrix', 'Vmatrix', 'cases', 'dcases'];
+  for (var mi = 0; mi < MATRIXES.length; mi++) ENV[MATRIXES[mi]] = envMatrix(MATRIXES[mi], false);
+  ENV.array = envMatrix('array', true);
+
+  CMD.begin = function () {
+    var name = envName();
+    if (!name) return [unkNode('\\begin')];
+    var f = ENV[name];
+    if (f) return f();
+    var toks = readBody();
+    return [unkNode('\\begin{' + name + '}')].concat(parseToks(toks));
+  };
+  CMD.end = function () { return [unkNode('\\end')]; };
+
+  /* ---------------- control symbols ---------------- */
+
+  function runCs(v) {
+    if (v === '\\') return CMD['\\']();
+    if (CSP[v]) { p.last = 'atom'; return [spNode(CSP[v][0], CSP[v][1])]; }
+    if (v === '{' || v === '}') { p.last = 'close'; return [el('span', 'delim', [tx(v)])]; }
+    if (v === '|') { p.last = 'close'; return [el('span', 'delim vert', [tx('‖')])]; }
+    if (v === '%') { p.last = 'atom'; return [el('span', 'mo', [tx('%')])]; }
+    if (v === '$') { p.last = 'atom'; return [el('span', 'mo', [tx('$')])]; }
+    if (v === '&') { p.last = 'atom'; return [el('span', 'mo', [tx('&')])]; }
+    if (v === '#' || v === '_' || v === '"' || v === "'" || v === '`' || v === '=') {
+      p.last = 'atom';
+      return [el('span', 'mo', [tx(v)])];
+    }
+    if (v === '') return [];
+    return [unkNode('\\' + v)];
+  }
+
+  /* ---------------- command dispatch ---------------- */
+
+  function runCmd(name) {
+    var f = CMD[name];
+    if (f) return f();
+    if (GREEK[name]) { p.last = 'atom'; return [el('span', 'mi', [tx(GREEK[name])], 'font-style:italic')]; }
+    if (GREEK_UP[name]) { p.last = 'atom'; return [el('span', 'mi', [tx(GREEK_UP[name])], 'font-style:normal')]; }
+    if (REL[name]) { p.last = 'rel'; return [el('span', 'mo rel', [tx(REL[name])])]; }
+    if (OPS[name]) { p.last = 'op'; return [el('span', 'mo bin', [tx(OPS[name])])]; }
+    if (OPNAME[name]) { p.last = 'atom'; return [opnameNode(OPNAME[name])]; }
+    if (BIGOP[name]) {
+      p.last = 'op';
+      var inner = LIMLIKE[name] ? opnameNode(BIGOP[name])
+        : el('span', 'op', [tx(BIGOP[name])], 'font-size:1.35em;line-height:1;padding:0 .05em');
+      var o = el('span', 'opbig', [inner]);
+      o.bigop = true;
+      return [o];
+    }
+    if (MISC[name]) { p.last = 'atom'; return [el('span', 'mo', [tx(MISC[name])], 'font-style:normal')]; }
+    if (ACCENT_MARK[name]) return CMD[name]();
+    return [unkNode('\\' + name)];
+  }
+
+  /* ---------------- entry points ---------------- */
+
+  function strip(src) {
+    var s = String(src == null ? '' : src).replace(/\r\n?/g, '\n').trim();
+    if (s.length > 3 && s.slice(0, 2) === '$$' && s.slice(-2) === '$$') return s.slice(2, -2).trim();
+    if (s.length > 1 && s.charAt(0) === '$' && s.charAt(s.length - 1) === '$') return s.slice(1, -1).trim();
+    return s;
+  }
+
+  function build(tex, options) {
+    var o = options || {};
+    var src = strip(tex);
+    p = { t: tokenize(src), i: 0, src: src, display: !!o.display, last: 'none', noLimits: false, noScript: 0, pendingNot: false, st: st({}) };
+    var nodes;
+    try {
+      nodes = parseUntil(noStop);
+    } catch (err) {
+      if (global.console && console.warn) console.warn('nano/tex:', err);
+      nodes = [unkNode(src)];
+    }
+    var root = el('span', 'tex' + (o.display ? ' tex-display' : ''), nodes,
+      o.display ? 'display:block;margin:.6em 0;text-align:center' : '');
+    p = null;
+    return root;
+  }
+
+  function render(tex, options) {
+    var root = build(tex, options);
+    var d = global.document || (typeof document !== 'undefined' ? document : null);
+    if (!d || !d.createElement) return root;
+    return toDom(root, d);
+  }
+
+  function renderToString(tex, options) { return toHtml(build(tex, options)); }
+
+  global.NanoTex = { render: render, renderToString: renderToString };
+})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));
+/* js_runtime.js - nano: interactive runtime for generated documents */
+(function (global) {
+  'use strict';
+
+  var doc = global.document;
+  var TeX = global.NanoTex;
+  var con = global.console;
+
+  function warn() {
+    try {
+      if (con && con.warn) con.warn.apply(con, ['nano:'].concat(Array.prototype.slice.call(arguments)));
+    } catch (e) {}
+  }
+  function guard(name, fn) {
+    return function () {
+      try {
+        return fn.apply(null, arguments);
+      } catch (e) {
+        warn(name, e && e.message ? e.message : e);
+      }
+    };
+  }
+
+  var raf = global.requestAnimationFrame || function (fn) {
+    var t = global.setTimeout;
+    return t ? t(fn, 16) : null;
+  };
+
+  var hasOwn = Object.prototype.hasOwnProperty;
+
+  /* ================= expression evaluator ================= */
+
+  var CONSTS = { pi: Math.PI, e: Math.E, tau: 2 * Math.PI };
+  var FUNCS = {
+    sin: Math.sin, cos: Math.cos, tan: Math.tan,
+    asin: Math.asin, acos: Math.acos, atan: Math.atan,
+    atan2: Math.atan2,
+    sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+    exp: Math.exp, ln: Math.log,
+    log2: function (x) { return Math.log(x) / Math.LN2; },
+    log10: function (x) { return Math.log(x) / Math.LN10; },
+    log: function (x, b) { return b === undefined ? Math.log(x) : Math.log(x) / Math.log(b); },
+    sqrt: Math.sqrt, abs: Math.abs,
+    sign: function (x) { return x > 0 ? 1 : x < 0 ? -1 : x === 0 ? 0 : NaN; },
+    signum: function (x) { return x > 0 ? 1 : x < 0 ? -1 : x === 0 ? 0 : NaN; },
+    floor: Math.floor, ceil: Math.ceil,
+    round: function (x, d) {
+      if (d === undefined) return Math.round(x);
+      var m = Math.pow(10, d | 0);
+      return Math.round(x * m) / m;
+    },
+    trunc: function (x) { return x < 0 ? Math.ceil(x) : Math.floor(x); },
+    pow: function (a, b) { return Math.pow(a, b); },
+    min: function () { return Math.min.apply(Math, arguments); },
+    max: function () { return Math.max.apply(Math, arguments); },
+    clamp: function (x, a, b) { return Math.min(Math.max(x, a), b); },
+    hypot: function (a, b) { return Math.sqrt(a * a + b * b); },
+    mod: function (a, b) { return a % b; }
+  };
+
+  function lex(src) {
+    var out = [], i = 0, n = src.length, c, j;
+    while (i < n) {
+      c = src.charAt(i);
+      if (c === ' ' || c === '\t' || c === '\n' || c === '\r') { i++; continue; }
+      if (c >= '0' && c <= '9') {
+        j = i;
+        while (j < n && src.charAt(j) >= '0' && src.charAt(j) <= '9') j++;
+        if (src.charAt(j) === '.' && /\d/.test(src.charAt(j + 1) || '')) {
+          j++;
+          while (j < n && /\d/.test(src.charAt(j) || '')) j++;
+        }
+        out.push({ k: 'num', v: parseFloat(src.slice(i, j)) });
+        i = j;
+        continue;
+      }
+      if (c === '.' && /\d/.test(src.charAt(i + 1) || '')) {
+        j = i + 1;
+        while (j < n && /\d/.test(src.charAt(j) || '')) j++;
+        out.push({ k: 'num', v: parseFloat(src.slice(i, j)) });
+        i = j;
+        continue;
+      }
+      if (/[A-Za-z_]/.test(c)) {
+        j = i;
+        while (j < n && /[A-Za-z0-9_]/.test(src.charAt(j))) j++;
+        out.push({ k: 'id', v: src.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if ('+-*/%^(),'.indexOf(c) >= 0) { out.push({ k: 'op', v: c }); i++; continue; }
+      throw new Error('unexpected character "' + c + '"');
+    }
+    out.push({ k: 'end' });
+    return out;
+  }
+
+  function Parser(toks) { this.t = toks; this.i = 0; }
+  Parser.prototype.peek = function () { return this.t[this.i]; };
+  Parser.prototype.take = function () { return this.t[this.i++]; };
+  Parser.prototype.isOp = function (v) { var t = this.peek(); return t.k === 'op' && t.v === v; };
+  Parser.prototype.startsValue = function (t) {
+    return t.k === 'num' || t.k === 'id' || (t.k === 'op' && t.v === '(');
+  };
+  Parser.prototype.expr = function () {
+    var node = this.term();
+    for (;;) {
+      var t = this.peek();
+      if (t.k !== 'op' || (t.v !== '+' && t.v !== '-')) break;
+      this.take();
+      node = { k: 'bin', v: t.v, a: node, b: this.term() };
+    }
+    return node;
+  };
+  Parser.prototype.term = function () {
+    var node = this.unary(), t;
+    for (;;) {
+      t = this.peek();
+      if (t.k === 'op' && (t.v === '*' || t.v === '/' || t.v === '%')) {
+        this.take();
+        node = { k: 'bin', v: t.v, a: node, b: this.unary() };
+        continue;
+      }
+      if (this.startsValue(t)) { node = { k: 'bin', v: '*', a: node, b: this.unary() }; continue; }
+      break;
+    }
+    return node;
+  };
+  Parser.prototype.unary = function () {
+    var t = this.peek();
+    if (t.k === 'op' && (t.v === '-' || t.v === '+')) {
+      this.take();
+      return { k: 'un', v: t.v, a: this.unary() };
+    }
+    return this.power();
+  };
+  Parser.prototype.power = function () {
+    var base = this.value();
+    if (this.isOp('^')) {
+      this.take();
+      return { k: 'bin', v: '^', a: base, b: this.unary() };
+    }
+    return base;
+  };
+  Parser.prototype.value = function () {
+    var t = this.take();
+    if (t.k === 'num') return { k: 'num', v: t.v };
+    if (t.k === 'id') {
+      if (this.isOp('(')) {
+        this.take();
+        var args = [];
+        if (!this.isOp(')')) {
+          args.push(this.expr());
+          while (this.isOp(',')) { this.take(); args.push(this.expr()); }
+        }
+        if (!this.isOp(')')) throw new Error('missing )');
+        this.take();
+        return { k: 'call', v: t.v, args: args };
+      }
+      return { k: 'var', v: t.v };
+    }
+    if (t.k === 'op' && t.v === '(') {
+      var e = this.expr();
+      if (!this.isOp(')')) throw new Error('missing )');
+      this.take();
+      return e;
+    }
+    throw new Error('unexpected token');
+  };
+
+  function evaluate(node, x, xname, scope) {
+    switch (node.k) {
+      case 'num': return node.v;
+      case 'var':
+        if (node.v === xname || node.v === 'x') return x;
+        if (hasOwn.call(CONSTS, node.v)) return CONSTS[node.v];
+        if (scope) {
+          var sv = scope(node.v);
+          if (typeof sv === 'number') return sv;
+        }
+        return NaN;
+      case 'un': {
+        var a = evaluate(node.a, x, xname, scope);
+        return node.v === '-' ? -a : +a;
+      }
+      case 'bin': {
+        var l = evaluate(node.a, x, xname, scope), r = evaluate(node.b, x, xname, scope);
+        switch (node.v) {
+          case '+': return l + r;
+          case '-': return l - r;
+          case '*': return l * r;
+          case '/': return l / r;
+          case '%': return l % r;
+          case '^': return Math.pow(l, r);
+        }
+        return NaN;
+      }
+      case 'call': {
+        var f = FUNCS[node.v];
+        if (!f) return NaN;
+        var args = [], i;
+        for (i = 0; i < node.args.length; i++) args.push(evaluate(node.args[i], x, xname, scope));
+        try {
+          return f.apply(null, args);
+        } catch (e) {
+          return NaN;
+        }
+      }
+    }
+    return NaN;
+  }
+
+  function compile(src, xname) {
+    try {
+      var ps = new Parser(lex(String(src)));
+      var ast = ps.expr();
+      if (ps.peek().k !== 'end') throw new Error('trailing input');
+      return function (x, scope) {
+        try {
+          return evaluate(ast, x, xname || 'x', scope);
+        } catch (e) {
+          return NaN;
+        }
+      };
+    } catch (e) {
+      warn('formula "' + src + '":', e.message);
+      return null;
+    }
+  }
+
+  function evalFormula(src, x, xname) {
+    var f = compile(src, xname || 'x');
+    if (!f) return NaN;
+    return f(typeof x === 'number' ? x : 0, scope);
+  }
+
+  function scope(name) {
+    return hasOwn.call(vars, name) ? vars[name] : undefined;
+  }
+
+  /* ================= numbers ================= */
+
+  function fmt4(v) {
+    if (typeof v === 'boolean') return v ? 'true' : 'false';
+    if (typeof v === 'string') return v;
+    if (v === null || v === undefined) return '';
+    if (typeof v !== 'number' || !isFinite(v)) return String(v);
+    if (v === Math.round(v) && Math.abs(v) < 1e15) return String(v);
+    var r = Number(v.toPrecision(4));
+    var a = Math.abs(r);
+    if (a !== 0 && (a < 1e-4 || a >= 1e7)) return r.toExponential(3).replace('e+', 'e');
+    return String(r);
+  }
+
+  function niceNum(range, round) {
+    if (!(range > 0)) return 1;
+    var exp = Math.floor(Math.log(range) / Math.LN10);
+    var f = range / Math.pow(10, exp);
+    var nf;
+    if (round) nf = f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10;
+    else nf = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10;
+    return nf * Math.pow(10, exp);
+  }
+
+  function ticks(lo, hi, target) {
+    if (!isFinite(lo) || !isFinite(hi) || hi <= lo) return [lo];
+    var step = niceNum(niceNum(hi - lo, false) / Math.max(target, 2), true);
+    var out = [], v = Math.ceil(lo / step) * step, guardCount = 0;
+    while (v <= hi + step * 1e-9 && guardCount < 200) {
+      out.push(Math.round(v * 1e9) / 1e9);
+      v += step;
+      guardCount++;
+    }
+    return out;
+  }
+
+  function decimalsFor(ts) {
+    var d = 0, i, s, j;
+    for (i = 0; i < ts.length; i++) {
+      s = String(ts[i]);
+      j = s.indexOf('.');
+      if (j >= 0) d = Math.max(d, Math.min(s.length - j - 1, 6));
+    }
+    return d;
+  }
+
+  function tickLabel(v, dec) {
+    if (!isFinite(v)) return '';
+    var m = Math.pow(10, dec);
+    return fmtTick(Math.round(v * m) / m);
+  }
+  function fmtTick(v) {
+    if (v === Math.round(v) && Math.abs(v) < 1e15) return String(v);
+    var a = Math.abs(v);
+    if (a !== 0 && (a < 1e-4 || a >= 1e7)) return v.toExponential(1).replace('e+', 'e');
+    return String(Number(v.toPrecision(6)));
+  }
+
+  /* ================= plot spec ================= */
+
+  var PALETTE = ['#346aba', '#e0693e', '#48a05a', '#8c5cc4', '#269494', '#d66e6e', '#e0a028', '#5a6476', '#78aa3c', '#be643c'];
+  var INK = '#1e222a', MUTED = '#7a8292', GRID = '#e4e7ee', AXIS = '#788090';
+  var FONT = "Helvetica, Arial, 'Segoe UI', 'Liberation Sans', sans-serif";
+
+  function attr(el, name) {
+    if (!el) return null;
+    if (el.getAttribute) {
+      var v = el.getAttribute(name);
+      if (v !== null && v !== undefined) return v;
+    }
+    if (el.dataset && hasOwn.call(el.dataset, name)) return el.dataset[name];
+    return null;
+  }
+
+  function num(v) {
+    if (v === null || v === undefined || v === '') return NaN;
+    var f = parseFloat(v);
+    return isFinite(f) ? f : NaN;
+  }
+
+  function list(v) {
+    if (!v) return [];
+    return String(v).split(';').map(function (s) { return s.trim(); }).filter(function (s) { return s !== ''; });
+  }
+
+  function specOf(el, over) {
+    var o = over || {};
+    function pick(key, name) { return o[key] !== undefined && o[key] !== null ? o[key] : attr(el, name); }
+    var formulas = list(pick('formula', 'data-formula'));
+    if (!formulas.length && typeof o.formula === 'string') formulas = [o.formula];
+    var labels = list(pick('labels', 'data-labels'));
+    var style = (pick('style', 'data-style') || 'line').toLowerCase();
+    var fillRaw = pick('fill', 'data-fill');
+    return {
+      el: el,
+      varName: pick('var', 'data-var') || '',
+      xname: pick('varName', 'data-var-name') || 'x',
+      formulas: formulas,
+      labels: labels,
+      style: style,
+      fill: fillRaw === '1' || fillRaw === 'true' || fillRaw === 'yes' || fillRaw === 'area' || style === 'area',
+      color: pick('color', 'data-color') || '',
+      xmin: num(pick('xmin', 'data-xmin')),
+      xmax: num(pick('xmax', 'data-xmax')),
+      ymin: num(pick('ymin', 'data-ymin')),
+      ymax: num(pick('ymax', 'data-ymax')),
+      points: Math.max(8, Math.min(4000, num(pick('points', 'data-points')) || 240)),
+      xlabel: pick('xlabel', 'data-xlabel') || '',
+      ylabel: pick('ylabel', 'data-ylabel') || ''
+    };
+  }
+
+  function sampleAll(s) {
+    var out = [], i, j, n = s.points, dx;
+    var xlo = isFinite(s.xmin) ? s.xmin : 0;
+    var xhi = isFinite(s.xmax) ? s.xmax : 1;
+    if (xhi <= xlo) xhi = xlo + 1;
+    dx = (xhi - xlo) / (n - 1);
+    for (i = 0; i < s.formulas.length; i++) {
+      var fn = compile(s.formulas[i], s.xname), xs = [], ys = [];
+      for (j = 0; j < n; j++) {
+        var x = xlo + j * dx;
+        xs.push(x);
+        ys.push(fn ? fn(x, scope) : NaN);
+      }
+      out.push({ x: xs, y: ys, color: i === 0 && s.color ? s.color : PALETTE[i % PALETTE.length], label: s.labels[i] || '' });
+    }
+    return out;
+  }
+
+  function bounds(s, series) {
+    var i, j, lo = Infinity, hi = -Infinity, v;
+    for (i = 0; i < series.length; i++) {
+      for (j = 0; j < series[i].y.length; j++) {
+        v = series[i].y[j];
+        if (isFinite(v)) {
+          if (v < lo) lo = v;
+          if (v > hi) hi = v;
+        }
+      }
+    }
+    if (!isFinite(lo) || !isFinite(hi)) { lo = 0; hi = 1; }
+    var span = hi - lo || Math.abs(hi) || 1;
+    var ylo = isFinite(s.ymin) ? s.ymin : (lo >= 0 ? 0 : lo - span * 0.05);
+    var yhi = isFinite(s.ymax) ? s.ymax : hi + span * 0.05;
+    if (yhi <= ylo) yhi = ylo + 1;
+    return { ylo: ylo, yhi: yhi };
+  }
+
+  /* ================= canvas drawing ================= */
+
+  var sizes = [];
+
+  function sizeOf(cv, dpr) {
+    var w = cv.clientWidth, h = cv.clientHeight, rec = null, i, pw, ph;
+    for (i = 0; i < sizes.length; i++) if (sizes[i].c === cv) { rec = sizes[i]; break; }
+    if (!w || !h) {
+      if (rec) { w = rec.w; h = rec.h; }
+      else { w = cv.width || 320; h = cv.height || 200; }
+    }
+    w = Math.max(40, w);
+    h = Math.max(40, h);
+    pw = Math.max(1, Math.round(w * dpr));
+    ph = Math.max(1, Math.round(h * dpr));
+    if (cv.width !== pw) cv.width = pw;
+    if (cv.height !== ph) cv.height = ph;
+    if (!rec) sizes.push({ c: cv, w: w, h: h });
+    else { rec.w = w; rec.h = h; }
+    return { w: w, h: h };
+  }
+
+  function draw(rec) {
+    var s = rec.spec, cv = s.el;
+    var ctx = cv.getContext ? cv.getContext('2d') : null;
+    if (!ctx) return;
+    var dpr = global.devicePixelRatio || 1;
+    var sz = sizeOf(cv, dpr);
+    var W = sz.w, H = sz.h;
+    var series = sampleAll(s);
+    if (!series.length) return;
+    var bd = bounds(s, series);
+
+    var px = s.ylabel ? 62 : 54, py = 16, pr = 16;
+    var pb = 46 + (s.xlabel ? 18 : 0);
+    var pw = W - px - pr, ph = H - py - pb;
+    if (pw < 10 || ph < 10) return;
+    var xlo = isFinite(s.xmin) ? s.xmin : series[0].x[0];
+    var xhi = isFinite(s.xmax) ? s.xmax : series[0].x[series[0].x.length - 1];
+    if (xhi <= xlo) xhi = xlo + 1;
+    var ylo = bd.ylo, yhi = bd.yhi;
+
+    function X(v) { return px + (v - xlo) / (xhi - xlo) * pw; }
+    function Y(v) { return py + ph - (v - ylo) / (yhi - ylo) * ph; }
+
+    if (ctx.setTransform) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (ctx.clearRect) ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'butt';
+    if (ctx.setLineDash) ctx.setLineDash([]);
+
+    var yt = ticks(ylo, yhi, 6), xt = ticks(xlo, xhi, 8);
+    var i, j, t, y, x;
+
+    ctx.strokeStyle = GRID;
+    ctx.lineWidth = 0.7;
+    if (ctx.setLineDash) ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    for (i = 0; i < yt.length; i++) {
+      y = Y(yt[i]);
+      if (y < py - 0.5 || y > py + ph + 0.5) continue;
+      ctx.moveTo(px, y);
+      ctx.lineTo(px + pw, y);
+    }
+    for (i = 0; i < xt.length; i++) {
+      x = X(xt[i]);
+      if (x < px - 0.5 || x > px + pw + 0.5) continue;
+      ctx.moveTo(x, py);
+      ctx.lineTo(x, py + ph);
+    }
+    ctx.stroke();
+    if (ctx.setLineDash) ctx.setLineDash([]);
+
+    ctx.strokeStyle = AXIS;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(px, py + ph);
+    ctx.lineTo(px + pw, py + ph);
+    ctx.moveTo(px, py);
+    ctx.lineTo(px, py + ph);
+    ctx.stroke();
+
+    ctx.fillStyle = MUTED;
+    ctx.font = '10px ' + FONT;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    var ydec = decimalsFor(yt);
+    for (i = 0; i < yt.length; i++) {
+      y = Y(yt[i]);
+      if (y < py - 0.5 || y > py + ph + 0.5) continue;
+      ctx.beginPath();
+      ctx.moveTo(px - 3, y);
+      ctx.lineTo(px, y);
+      ctx.stroke();
+      ctx.fillText(tickLabel(yt[i], ydec), px - 7, y);
+    }
+    var xdec = decimalsFor(xt);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (i = 0; i < xt.length; i++) {
+      x = X(xt[i]);
+      if (x < px - 0.5 || x > px + pw + 0.5) continue;
+      ctx.beginPath();
+      ctx.moveTo(x, py + ph);
+      ctx.lineTo(x, py + ph + 3);
+      ctx.stroke();
+      ctx.fillText(tickLabel(xt[i], xdec), x, py + ph + 6);
+    }
+
+    var showLine = s.style === '' || s.style === 'line' || s.style === 'both' || s.style === 'area' || s.style === 'step' || s.style === 'stem' || s.style === 'stairs';
+    var showPts = s.style === 'both' || s.style === 'dot' || s.style === 'points' || s.style === 'area' || s.style === 'scatter';
+    var n = series[0].x.length;
+    if (n <= 40) showPts = true;
+    var step = s.style === 'step' || s.style === 'stairs';
+
+    for (i = 0; i < series.length; i++) {
+      var S = series[i];
+      if (s.fill && i === 0 && showLine) {
+        ctx.beginPath();
+        var started = false, base = Math.max(py, Math.min(py + ph, Y(Math.max(ylo, Math.min(yhi, 0)))));
+        for (j = 0; j < S.x.length; j++) {
+          if (!isFinite(S.y[j])) continue;
+          x = X(S.x[j]);
+          y = Y(S.y[j]);
+          if (!started) { ctx.moveTo(x, base); started = true; }
+          ctx.lineTo(x, y);
+        }
+        if (started) {
+          ctx.lineTo(x, base);
+          ctx.closePath();
+          ctx.fillStyle = rgba(S.color, 0.14);
+          ctx.fill();
+        }
+      }
+      if (showLine) {
+        ctx.beginPath();
+        var pen = false, prevY = 0;
+        for (j = 0; j < S.x.length; j++) {
+          if (!isFinite(S.y[j])) { pen = false; continue; }
+          x = X(S.x[j]);
+          y = Y(S.y[j]);
+          if (!pen) { ctx.moveTo(x, y); pen = true; }
+          else if (step) {
+            ctx.lineTo(x, prevY);
+            ctx.lineTo(x, y);
+          } else ctx.lineTo(x, y);
+          prevY = y;
+        }
+        ctx.strokeStyle = S.color;
+        ctx.lineWidth = s.style === 'stem' ? 1.4 : 2;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        if (step) {
+          ctx.fillStyle = S.color;
+          for (j = 0; j < S.x.length; j++) {
+            if (!isFinite(S.y[j])) continue;
+            x = X(S.x[j]);
+            y = Y(S.y[j]);
+            ctx.fillRect(x - 1.5, y - 1.5, 3, 3);
+          }
+        }
+      }
+      if (showPts) {
+        ctx.fillStyle = S.color;
+        for (j = 0; j < S.x.length; j++) {
+          if (!isFinite(S.y[j])) continue;
+          x = X(S.x[j]);
+          y = Y(S.y[j]);
+          ctx.beginPath();
+          ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    if (series.length > 1 && s.labels.length) {
+      var rowH = 15, bw = 0, k;
+      ctx.font = '10px ' + FONT;
+      for (k = 0; k < series.length; k++) {
+        if (!series[k].label) continue;
+        bw = Math.max(bw, (ctx.measureText ? ctx.measureText(series[k].label).width : series[k].label.length * 5.5) + 34);
+      }
+      if (bw > 0) {
+        var rows = 0;
+        for (k = 0; k < series.length; k++) if (series[k].label) rows++;
+        var bh = rows * rowH + 8;
+        var bx = px + pw - bw - 8, by = py + 8;
+        ctx.fillStyle = 'rgba(255,255,255,0.88)';
+        ctx.strokeStyle = GRID;
+        ctx.lineWidth = 1;
+        if (ctx.fillRect) ctx.fillRect(bx, by, bw, bh);
+        if (ctx.strokeRect) ctx.strokeRect(bx, by, bw, bh);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        var ry = by + 6;
+        for (k = 0; k < series.length; k++) {
+          if (!series[k].label) continue;
+          ctx.strokeStyle = series[k].color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(bx + 7, ry + 5);
+          ctx.lineTo(bx + 19, ry + 5);
+          ctx.stroke();
+          ctx.fillStyle = series[k].color;
+          ctx.fillRect(bx + 11, ry + 3, 4, 4);
+          ctx.fillStyle = INK;
+          ctx.fillText(series[k].label, bx + 24, ry);
+          ry += rowH;
+        }
+      }
+    }
+
+    if (s.xlabel) {
+      ctx.fillStyle = MUTED;
+      ctx.font = '11px ' + FONT;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(s.xlabel, px + pw / 2, H - 4);
+    }
+    if (s.ylabel) {
+      ctx.save();
+      ctx.fillStyle = MUTED;
+      ctx.font = '11px ' + FONT;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.translate(13, py + ph / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(s.ylabel, 0, 0);
+      ctx.restore();
+    }
+  }
+
+  function rgba(hex, a) {
+    var h = String(hex).replace('#', '');
+    if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+    if (h.length !== 6) return 'rgba(0,0,0,' + a + ')';
+    var r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+    if (!isFinite(r)) return 'rgba(0,0,0,' + a + ')';
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  /* ================= state ================= */
+
+  var plots = [];
+  var byVar = {};
+  var vars = {};
+  var meta = {};
+  var subs = {};
+  var readouts = [];
+  var dirty = {};
+  var queued = false;
+  var booted = false;
+
+  function redrawFor(name) {
+    var list2 = byVar[name], i;
+    if (!list2) return;
+    for (i = 0; i < list2.length; i++) draw(list2[i]);
+  }
+
+  function flush() {
+    queued = false;
+    for (var k in dirty) {
+      if (hasOwn.call(dirty, k)) redrawFor(k);
+    }
+    dirty = {};
+  }
+
+  function schedule(name) {
+    dirty[name] = true;
+    if (!queued) {
+      queued = true;
+      if (!raf(flush)) flush();
+    }
+  }
+
+  function fire(name, value) {
+    var list2 = subs[name];
+    if (!list2) return;
+    for (var i = 0; i < list2.length; i++) {
+      try {
+        list2[i](value, name);
+      } catch (e) {
+        warn('listener for "' + name + '":', e.message);
+      }
+    }
+  }
+
+  function optionText(el) {
+    try {
+      if (el.options && el.options.length && el.selectedIndex >= 0) {
+        var o = el.options[el.selectedIndex];
+        if (o.text !== undefined && o.text !== '') return o.text;
+        if (o.label) return o.label;
+      }
+    } catch (e) {}
+    return el.value === undefined ? '' : String(el.value);
+  }
+
+  function displayFor(name) {
+    var m = meta[name];
+    if (m && m.el) {
+      var type = (m.el.type || '').toLowerCase();
+      if (type === 'checkbox') return m.el.checked ? 'true' : 'false';
+      if (m.el.tagName === 'SELECT' || type === 'select-one' || type === 'select') return optionText(m.el);
+    }
+    return fmt4(vars[name]);
+  }
+
+  function updateReadouts(name) {
+    for (var i = 0; i < readouts.length; i++) {
+      if (name !== null && readouts[i].name !== name) continue;
+      try {
+        readouts[i].el.textContent = displayFor(readouts[i].name);
+      } catch (e) {
+        warn('readout:', e.message);
+      }
+    }
+  }
+
+  function setVar(name, value) {
+    if (!name) return;
+    vars[name] = value;
+    meta[name] = meta[name] || {};
+    fire(name, value);
+    updateReadouts(name);
+    if (byVar[name]) schedule(name);
+  }
+
+  function getVar(name) {
+    return hasOwn.call(vars, name) ? vars[name] : 0;
+  }
+
+  function on(name, fn) {
+    if (typeof fn !== 'function') return;
+    subs[name] = subs[name] || [];
+    subs[name].push(fn);
+  }
+
+  function register(el, spec) {
+    if (!el) return null;
+    var s = specOf(el, spec);
+    if (!s.formulas.length) {
+      warn('canvas live: no data-formula');
+      return null;
+    }
+    var rec = { el: el, spec: s };
+    plots.push(rec);
+    if (s.varName) {
+      byVar[s.varName] = byVar[s.varName] || [];
+      byVar[s.varName].push(rec);
+    }
+    try {
+      draw(rec);
+    } catch (e) {
+      warn('plot:', e.message);
+    }
+    return rec;
+  }
+
+  function redrawAll() {
+    for (var i = 0; i < plots.length; i++) {
+      try {
+        draw(plots[i]);
+      } catch (e) {
+        warn('plot:', e.message);
+      }
+    }
+  }
+
+  /* ================= document wiring ================= */
+
+  function qsa(sel) {
+    try {
+      return doc.querySelectorAll(sel) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function toArray(list2) {
+    var out = [], i;
+    for (i = 0; i < list2.length; i++) out.push(list2[i]);
+    return out;
+  }
+
+  function hasClass(el, name) {
+    if (!el) return false;
+    if (el.classList) return el.classList.contains(name);
+    var c = attr(el, 'class') || '';
+    return (' ' + c + ' ').indexOf(' ' + name + ' ') >= 0;
+  }
+
+  function typesetMath() {
+    var els = toArray(qsa('.math, .math-display')), i, el, src, node;
+    for (i = 0; i < els.length; i++) {
+      el = els[i];
+      try {
+        src = attr(el, 'data-tex');
+        if (src === null || src === undefined) src = el.textContent;
+        if (!TeX) throw new Error('NanoTex missing');
+        node = TeX.render(src, { display: hasClass(el, 'math-display') });
+        el.setAttribute('data-tex', src);
+        while (el.firstChild) el.removeChild(el.firstChild);
+        el.appendChild(node);
+      } catch (e) {
+        warn('math:', e.message);
+      }
+    }
+  }
+
+  function byId(id) {
+    if (!id) return null;
+    if (doc.getElementById) {
+      var el = doc.getElementById(id);
+      if (el) return el;
+    }
+    var all = toArray(qsa('[id]')), i;
+    for (i = 0; i < all.length; i++) if (attr(all[i], 'id') === id) return all[i];
+    return null;
+  }
+
+  function firstPre(root) {
+    if (!root) return null;
+    if (root.tagName === 'PRE') return root;
+    if (root.querySelector) {
+      try {
+        return root.querySelector('pre');
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  function copyTarget(btn) {
+    var id = attr(btn, 'data-copy-target');
+    var el = id ? byId(id) : null;
+    var pre = el ? firstPre(el) : null;
+    if (pre) return pre;
+    if (el) return el;
+    return firstPre(btn.parentNode);
+  }
+
+  function legacyCopy(text) {
+    var ta = null, host = doc.body || doc.documentElement;
+    try {
+      ta = doc.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', 'readonly');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      ta.style.left = '0';
+      ta.style.opacity = '0';
+      if (host && host.appendChild) host.appendChild(ta);
+      if (ta.select) ta.select();
+      else if (ta.setSelectionRange) ta.setSelectionRange(0, text.length);
+      if (doc.execCommand) doc.execCommand('copy');
+      if (ta.parentNode) ta.parentNode.removeChild(ta);
+    } catch (e) {
+      warn('copy:', e.message);
+      if (ta && ta.parentNode) {
+        try { ta.parentNode.removeChild(ta); } catch (e2) {}
+      }
+    }
+  }
+
+  function writeClipboard(text) {
+    var nav = global.navigator;
+    if (nav && nav.clipboard && typeof nav.clipboard.writeText === 'function') {
+      try {
+        var r = nav.clipboard.writeText(text);
+        if (r && typeof r.catch === 'function') r.catch(function () { legacyCopy(text); });
+        return true;
+      } catch (e) {
+        legacyCopy(text);
+        return true;
+      }
+    }
+    legacyCopy(text);
+    return true;
+  }
+
+  function wireCopy() {
+    var btns = toArray(qsa('button[data-copy-target]')), i;
+    for (i = 0; i < btns.length; i++) {
+      (function (btn) {
+        if (btn.__nanoCopy) return;
+        btn.__nanoCopy = 1;
+        var label = btn.textContent;
+        var timer = null;
+        try {
+          btn.addEventListener('click', function (ev) {
+            if (ev && ev.preventDefault) ev.preventDefault();
+            var target = copyTarget(btn);
+            var text = target && target.textContent !== undefined ? target.textContent : '';
+            writeClipboard(String(text));
+            btn.textContent = 'copied';
+            var t = global.setTimeout;
+            if (timer && global.clearTimeout) global.clearTimeout(timer);
+            if (t) timer = t(function () { btn.textContent = label; }, 1200);
+          });
+        } catch (e) {
+          warn('copy button:', e.message);
+        }
+      })(btns[i]);
+    }
+  }
+
+  function controlValue(el) {
+    var type = (el.type || '').toLowerCase();
+    if (type === 'checkbox') return !!el.checked;
+    var v = el.value;
+    if (type === 'number' || type === 'range') {
+      var f = parseFloat(v);
+      return isFinite(f) ? f : 0;
+    }
+    if (el.tagName === 'SELECT' || type === 'select-one' || type === 'select') {
+      var f2 = parseFloat(v);
+      return isFinite(f2) && String(f2) === String(v).trim() ? f2 : v;
+    }
+    return v;
+  }
+
+  function wireControls() {
+    var els = toArray(qsa('input[data-var], select[data-var], textarea[data-var]')), i;
+    for (i = 0; i < els.length; i++) {
+      (function (el) {
+        var name = attr(el, 'data-var');
+        if (!name) return;
+        if (el.__nanoBound) return;
+        el.__nanoBound = 1;
+        meta[name] = { el: el };
+        var handler = guard('control "' + name + '"', function () {
+          setVar(name, controlValue(el));
+        });
+        try {
+          el.addEventListener('input', handler);
+          el.addEventListener('change', handler);
+        } catch (e) {
+          warn('control:', e.message);
+        }
+      })(els[i]);
+    }
+    var outs = toArray(qsa('[data-var-readout]')), k;
+    for (k = 0; k < outs.length; k++) {
+      var nm = attr(outs[k], 'data-var-readout');
+      if (!nm) continue;
+      var dup = false, m;
+      for (m = 0; m < readouts.length; m++) if (readouts[m].el === outs[k]) dup = true;
+      if (!dup) readouts.push({ el: outs[k], name: nm });
+    }
+  }
+
+  function syncControls() {
+    var seen = {}, els = toArray(qsa('input[data-var], select[data-var], textarea[data-var]')), i, el, name;
+    for (i = 0; i < els.length; i++) {
+      el = els[i];
+      name = attr(el, 'data-var');
+      if (!name || seen[name]) continue;
+      seen[name] = 1;
+      try {
+        setVar(name, controlValue(el));
+      } catch (e) {
+        warn('sync:', e.message);
+      }
+    }
+    updateReadouts(null);
+  }
+
+  function registerLive() {
+    var cvs = toArray(qsa('canvas.live, canvas[data-formula]')), i;
+    for (i = 0; i < cvs.length; i++) {
+      if (cvs[i].__nanoLive) continue;
+      cvs[i].__nanoLive = 1;
+      try {
+        register(cvs[i], null);
+      } catch (e) {
+        warn('live plot:', e.message);
+      }
+    }
+  }
+
+  function init() {
+    if (booted) return;
+    booted = true;
+    try { typesetMath(); } catch (e) { warn('math:', e.message); }
+    try { wireCopy(); } catch (e) { warn('copy:', e.message); }
+    try { wireControls(); } catch (e) { warn('controls:', e.message); }
+    try { syncControls(); } catch (e) { warn('sync:', e.message); }
+    try { registerLive(); } catch (e) { warn('plots:', e.message); }
+  }
+
+  if (doc) {
+    try {
+      if (doc.readyState === 'loading' || !doc.body) {
+        if (doc.addEventListener) doc.addEventListener('DOMContentLoaded', init);
+        else init();
+      } else init();
+    } catch (e) {
+      warn('init:', e.message);
+    }
+  }
+
+  global.Nano = {
+    TeX: TeX,
+    register: guard('register', register),
+    redrawAll: guard('redrawAll', redrawAll),
+    setVar: guard('setVar', setVar),
+    getVar: guard('getVar', getVar),
+    on: guard('on', on),
+    evalFormula: guard('evalFormula', evalFormula),
+    fmt: fmt4
+  };
+})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));
+window.NanoTex = window.NanoTex || globalThis.NanoTex;
+window.Nano = window.Nano || globalThis.Nano;
+</script>
+</body>
+</html>
