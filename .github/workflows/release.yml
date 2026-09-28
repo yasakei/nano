@@ -63,7 +63,11 @@ jobs:
           - { target: x86_64-unknown-linux-musl, os: ubuntu-latest, archive: tar, toolchain: musl-tools }
           - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest, archive: tar, toolchain: gcc-aarch64-linux-gnu, qemu: true }
           - { target: aarch64-apple-darwin, os: macos-latest, archive: tar }
-          - { target: x86_64-apple-darwin, os: macos-13, archive: tar }
+          # macos-13 is retired; it no longer resolves and the job sits queued
+          # forever. The plain `macos-15`/`macos-latest` labels are arm64 now, so
+          # the Intel runner has to be asked for by name. Same macOS 26 SDK as
+          # the aarch64 job above, so both macOS artifacts come from one toolchain.
+          - { target: x86_64-apple-darwin, os: macos-26-intel, archive: tar }
           - { target: x86_64-pc-windows-msvc, os: windows-latest, archive: zip }
 
     steps:
