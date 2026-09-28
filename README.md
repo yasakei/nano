@@ -181,13 +181,13 @@ matrices, Greek and symbol-font characters are all supported.
 ## Output formats
 
 | | Markdown | HTML | PDF |
-| --- | --- | --- | --- |
-| prose, code, tables | ✅ | ✅ | ✅ |
-| vector charts | as data | inline SVG | vector paths |
+| --- | :---: | :---: | :---: |
+| prose, code, tables | full | full | full |
+| vector charts | data only | inline SVG | vector paths |
 | math | source | rendered | TeX subset |
 | images, audio, video | links | embedded | embedded |
-| interactive widgets | — | live | initial value |
-| self-contained | no | **yes** | **yes** |
+| interactive widgets | static | live | initial value |
+| single self-contained file | no | **yes** | **yes** |
 
 Themes: `default`, `serif`, `dark`, `minimal`.
 
