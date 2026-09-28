@@ -3,6 +3,7 @@ name = "nano"
 version = "0.1.0"
 edition = "2021"
 description = "Nano: a research document language. Prose + code + data + media, exported to Markdown, HTML and PDF."
+license = "Unlicense"
 
 [[bin]]
 name = "nano"
