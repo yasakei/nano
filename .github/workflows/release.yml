@@ -61,7 +61,7 @@ jobs:
         include:
           - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest, archive: tar }
           - { target: x86_64-unknown-linux-musl, os: ubuntu-latest, archive: tar, toolchain: musl-tools }
-          - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest, archive: tar, toolchain: gcc-aarch64-linux-gnu }
+          - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest, archive: tar, toolchain: gcc-aarch64-linux-gnu, qemu: true }
           - { target: aarch64-apple-darwin, os: macos-latest, archive: tar }
           - { target: x86_64-apple-darwin, os: macos-13, archive: tar }
           - { target: x86_64-pc-windows-msvc, os: windows-latest, archive: zip }
@@ -84,10 +84,19 @@ jobs:
             echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
           fi
 
+      - name: enable emulation for cross targets
+        if: matrix.qemu
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+          sudo update-binfmts --enable qemu-aarch64
+
       - name: build
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: smoke test the artifact
+        if: ${{ !matrix.qemu }}
         shell: bash
         run: |
           set -euo pipefail
@@ -102,6 +111,39 @@ jobs:
           got=$("$bin" --version)
           echo "built: $got"
           test "$got" = "nano ${{ needs.version.outputs.version }}"
+
+      - name: smoke test the cross-compiled artifact
+        if: ${{ matrix.qemu }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          t="${{ matrix.target }}"
+          want="nano ${{ needs.version.outputs.version }}"
+          bin="target/$t/release/nano"
+          chmod +x "$bin"
+          test -s "$bin"
+
+          # Structural check: the cross compiler produced an artifact for the
+          # target, not for the runner it happened to be built on.
+          desc=$(file -b "$bin")
+          echo "  $desc"
+          case "$t" in
+            aarch64-unknown-linux-gnu) echo "$desc" | grep -q 'ARM aarch64' ;;
+          esac
+
+          # The version is folded into the instruction stream as immediates, so
+          # it is not greppable in the binary. Executing it is the only honest
+          # way to read it back, exactly as for a native target.
+          got=""
+          if got=$("$bin" --version 2>/dev/null); then
+            echo "ran via binfmt: $got"
+          elif command -v qemu-aarch64-static >/dev/null 2>&1; then
+            got=$(qemu-aarch64-static -L /usr/aarch64-linux-gnu "$bin" --version)
+            echo "ran via qemu-aarch64-static: $got"
+          fi
+          test -n "$got" || { echo "::error::could not execute $t"; exit 1; }
+          test "$got" = "$want"
+          echo "built: $got"
 
       - name: stage
         shell: bash
